@@ -1,2 +1,2 @@
 # shellscripts
-Some shell scripts made in the boring oments.
+Some shell scripts made in the boring moments.
