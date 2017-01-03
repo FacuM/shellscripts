@@ -1,5 +1,0 @@
-# Cookies for domains related to legioncaliente.com.
-# This content may be pasted into a cookies.txt file and used by wget
-# Example:  wget -x --load-cookies cookies.txt http://www.legioncaliente.com/?zx=ee8cbbe11cee2241
-#
-.www.legioncaliente.com	TRUE	/	FALSE	0	GI	AB-IGuB1_xBhIDNzzfN_doF3y3nlrdNAlFAqxsBksG1BYebgBYAulSlHDu8DInEhjJ_LoQNQwk7pFGSns0cz3WW4M31m
