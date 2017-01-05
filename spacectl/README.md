@@ -1,0 +1,1 @@
+This script moves files from a directory to another (this last one must be another partition) until the starting directory is freed up by an user-selectable amount of disk space. Currently, the data control isn't ready nor started, please be careful if you are planning to use it in places where your data must be present at any cost.
