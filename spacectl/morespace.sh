@@ -45,7 +45,7 @@ INTERVAL=`cat interval`
 MINSPACE=`cat minspace`
 }
 # Check if there are saved settings
-firstusetest=(`ls | grep destination`)
+firstusetest=(`ls -1  | grep destination`)
 if [[ -z "${firstusetest// }" ]]
 then
  getdata
@@ -72,7 +72,7 @@ do
    SPACE=`cat testfix`
    SPACE=$(($SPACE * 1024))
    DATETIME=`date`
-   CURFILE=`ls $ORIGIN | tail -1`
+   CURFILE=`ls -t1 $ORIGIN | tail -1`
    rm "$DESTINATION/$CURFILE"
    cp "$ORIGIN/$CURFILE" "$DESTINATION/"
    TEST1=`stat --printf="%s" "$ORIGIN/$CURFILE"`
