@@ -77,7 +77,7 @@ do
    cp "$ORIGIN/$CURFILE" "$DESTINATION/"
    TEST1=`stat --printf="%s" "$ORIGIN/$CURFILE"`
    TEST2=`stat --printf="%s" "$DESTINATION/$CURFILE"`
-   if [ $TEST1 = $TEST2 ]
+   if [ "$TEST1" = "$TEST2" ]
    then
     echo "$DATETIME: File $CURFILE moved. SPC: $SPACE of $MINSPACE" >> logfile
     rm "$ORIGIN/$CURFILE"
