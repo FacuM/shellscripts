@@ -1,5 +1,5 @@
 #!/bin/bash
-# This is "compile", a shell script wich will help you $0 your kernel sources.
+# This is "compile", a shell script wich will help you build your kernel sources.
 # ---------------------------
 # Facundo Montero (facumo.fm@gmail.com)
 # ---------------------------
