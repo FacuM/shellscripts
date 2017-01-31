@@ -1,6 +1,6 @@
 #Freenet stats
 
-This bash script is able to parse your Freenet node's statistics page and show you your input and output rates. Optionally, you can see an scrolling list of your node's downloads list. After stopping the script by keystroke, it'll safely cleanup the temp file from your hard drive.
+This bash script is able to parse your Freenet node's statistics page and show you your input and output rates. Optionally, you can see an scrolling list of your node's downloads list. After stopping the script by keystroke, it'll safely cleanup the temp file from your hard drive. In active mode, if running, you can get the status of the datastore maintenance.
 
 Required packages:
 

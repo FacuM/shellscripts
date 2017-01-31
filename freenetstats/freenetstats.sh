@@ -74,6 +74,15 @@ function script {
  updatestats
 }
 function scriptactive {
+ DSTOREINF=`wget -qO - $URISCRIPT | grep Datastore | sed 's/.*running//' | sed 's/in progress: //' | sed 's/. Fre.*//' | sed 's/Datastore//' | sed 's/\t//g' | sed ':a;N;$!ba;s/\n//g'`
+ if [ -z  "$DSTOREINF" ]
+ then
+  :
+ else
+  nicedraw
+  printf "\nDatastore maintenance running: $DSTOREINF\n"
+  nicedraw
+ fi
  CURLINE=$(($CURLINE - 1))
  cat downloadstemp | head -$CURLINE | tail -$LINESLIST
  if [ $CURLINE = 0 ]
@@ -130,3 +139,5 @@ else
   fi
  fi
 fi
+# wget -qO - $URISCRIPT | grep Datastore | sed 's/.*running//' | sed 's/in progress: //' | sed 's/. Fre.*//' | sed 's/Datastore//' | sed 's/[[:space:]]//'
+cat ~/testfnet | grep Datastore | sed 's/.*running//' | sed 's/in progress: //' | sed 's/. Fre.*//' | sed 's/Datastore//' | sed 's/\t//g'
