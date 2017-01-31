@@ -12,8 +12,12 @@ freenetstats.sh ip:port [repeats/active] [interval]
 
 repeats: type an amount to repeat the script.
 
+
    freenetstats.sh 127.0.0.1:8888 5 - repeats five times
+   
 active: keep updating every one second or add interval.
 
+
    freenetstats.sh active - update every one second.
+   
    freenetstats.sh active 5 - update every five seconds.
