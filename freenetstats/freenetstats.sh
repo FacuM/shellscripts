@@ -5,7 +5,7 @@
 COLUMNS=`tput cols`
 COLSFOREND=$(($COLUMNS - 15))
 LINES=`tput lines`
-LINESLIST=$(($LINES - 16))
+LINESLIST=$(($LINES - 17))
 URISCRIPT="$1/stats/"
 URIDLLIST="$1/downloads/listKeys.txt"
 STATCOUNT=0
@@ -43,6 +43,7 @@ function nicedraw {
  CHARAM=0
 }
 function printbottom {
+ LINES=`tput lines`
  CHARAM=0
  while [ $CHARAM -lt $LINES ]
  do
@@ -85,6 +86,8 @@ function scriptactive {
   nicedraw
  fi
  CURLINE=$(($CURLINE - 1))
+ LINES=`tput lines`
+ LINESLIST=$(($LINES - 17))
  cat downloadstemp | head -$CURLINE | tail -$LINESLIST
  if [ $CURLINE = 0 ]
  then
@@ -120,6 +123,8 @@ else
     printf "\n"
     printf "\n"
     scriptactive
+    COLUMNS=`tput cols`
+    COLSFOREND=$(($COLUMNS - 15))
     CURCOLS=0
     while [ $CURCOLS -lt $COLSFOREND ]
     do
