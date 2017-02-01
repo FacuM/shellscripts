@@ -33,6 +33,7 @@ function ctrl_c() {
  fi
 }
 function nicedraw {
+ COLUMNS=`tput cols`
  CHARAM=0
  while [ $CHARAM -lt $COLUMNS ]
  do
@@ -139,5 +140,3 @@ else
   fi
  fi
 fi
-# wget -qO - $URISCRIPT | grep Datastore | sed 's/.*running//' | sed 's/in progress: //' | sed 's/. Fre.*//' | sed 's/Datastore//' | sed 's/[[:space:]]//'
-cat ~/testfnet | grep Datastore | sed 's/.*running//' | sed 's/in progress: //' | sed 's/. Fre.*//' | sed 's/Datastore//' | sed 's/\t//g'
