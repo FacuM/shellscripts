@@ -4,7 +4,8 @@ This bash script is able to parse your Freenet node's statistics page and show y
 
 Required packages:
 
-wget bash
+wget or curl
+bash
 
 Usage: 
 
