@@ -44,7 +44,7 @@ function nicedraw {
 }
 function printbottom {
  LINES=`tput lines`
- CHARAM=0
+ CHARAM=15
  while [ $CHARAM -lt $LINES ]
  do
   printf "\n"
@@ -54,11 +54,11 @@ function printbottom {
 }
 function updatestats {
  printf "\n\nInput rate: \n\n"
- wget -qO - $URISCRIPT | grep "Input Rate" | sed 's/&nbsp;/ /g' | sed 's/.*Rate: //' | sed 's/s).*/s)/'
+ $CMDLINE $URISCRIPT | grep "Input Rate" | sed 's/&nbsp;/ /g' | sed 's/.*Rate: //' | sed 's/s).*/s)/'
  printf "\n"
  nicedraw
  printf "\n\nOutput rate: \n\n"
- wget -qO - $URISCRIPT | grep "Output Rate" | sed 's/&nbsp;/ /g' | sed 's/.*Rate: //' | sed 's/s).*/s)/'
+ $CMDLINE $URISCRIPT | grep "Output Rate" | sed 's/&nbsp;/ /g' | sed 's/.*Rate: //' | sed 's/s).*/s)/'
  printf "\n"
  nicedraw
 }
@@ -66,7 +66,7 @@ function getprints {
  PRINTS=`cat $0 | grep "\n" | wc -l`
 }
 function processdllist {
- wget -qO - $URIDLLIST | sed 's-.*/--g' | sed 's/%20/ /g' > downloadstemp
+ $CMDLINE $URIDLLIST | sed 's-.*/--g' | sed 's/%20/ /g' > downloadstemp
  CURLINE=`cat downloadstemp | wc -l`
  CURLINES=$CURLINE
 }
@@ -76,7 +76,7 @@ function script {
  updatestats
 }
 function scriptactive {
- DSTOREINF=`wget -qO - $URISCRIPT | grep Datastore | sed 's/.*running//' | sed 's/in progress: //' | sed 's/. Fre.*//' | sed 's/Datastore//' | sed 's/\t//g' | sed ':a;N;$!ba;s/\n//g'`
+ DSTOREINF=`$CMDLINE $URISCRIPT | grep Datastore | sed 's/.*running//' | sed 's/in progress: //' | sed 's/. Fre.*//' | sed 's/Datastore//' | sed 's/\t//g' | sed ':a;N;$!ba;s/\n//g'`
  if [ -z  "$DSTOREINF" ]
  then
   :
@@ -100,6 +100,20 @@ if [ -z $1 ]
 then
  printf "Usage: \n\n$0 ip:port [repeats/active] [interval]\n\nrepeats: type an amount to repeat the script.\n   $0 127.0.0.1:8888 5 - repeats five times\nactive: keep updating every one second or add interval.\n   $0 active - update every one second.\n   $0 active 5 - update every five seconds.\n"
 else
+ wget test --quiet
+ if [ $? -eq 4 ]
+ then
+  CMDLINE="wget -qO -"
+ else
+  curl test -s
+  if [ $? -eq 6 ]
+  then
+   CMDLINE="curl"
+  else
+   echo "Not 'wget' nor 'curl' were found in your computer. Please install any of them and try again."
+   exit 1
+  fi
+ fi
  if [ -z $2 ]
  then
   script
