@@ -22,9 +22,9 @@ then
   PREV='None'
   while true
   do
-   sleep 5
+   sleep $interval
    # Check if screen is on
-   su -c 'dumpsys power | grep "Display Power" | grep "ON"'
+   service call power 12 | grep 1 > /dev/null
    if [ $? -ne 0 ]
    then
     # Get DB entries (with 1 it's enough)
@@ -39,9 +39,8 @@ then
       # Off
       su -c 'echo none > /sys/class/leds/charging/trigger'
       PREV=$LNOF
-    else
     fi
-#   fi
+   fi
   done
  fi
 else
