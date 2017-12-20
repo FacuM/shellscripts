@@ -7,7 +7,7 @@
 #
 ########################################
 
-# Test wether everything is set up or not.
+# Test whether everything is set up or not.
 if [ -e /sdcard/ledsettings.sh ]
 then
  # If it is, try. to use it
@@ -16,6 +16,14 @@ then
  then
   # Convert hours to milliseconds
   thold=$(($thold * 3600000))
+  # Hello
+  if [ $interval -gt 1 ]
+  then
+   mist='minutes'
+  else
+   mist='minute'
+  fi
+  echo "Hey there! Turn off your screen and wait $interval $mist, then, the LED will start blinking."
   #Convert minutes to seconds
   interval=$(($interval * 60))
   # Blink the LED every defined minutes
@@ -27,7 +35,7 @@ then
    service call power 12 | grep 1 > /dev/null
    if [ $? -ne 0 ]
    then
-    # Get DB entries (with 1 it's enough)
+    # Get DB entries
     QUERY="SELECT * FROM log WHERE posttime_ms < $thold ORDER BY posttime_ms DESC LIMIT 1"
     CMD="sqlite3 /data/system/notification_log.db '$QUERY'"
     LNOF=$(su -c "$CMD")
