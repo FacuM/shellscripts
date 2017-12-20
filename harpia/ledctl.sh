@@ -74,7 +74,7 @@ then
  fi
 else
  # If it isn't, just generate the file and exit with a generic error code.
- printf '#!/system/bin/bash\n# Set to 0 to disable, 1 to enable\nenabled=1\n# Set this variable to the desired threshold: (hours)\nthold=1\n# Set the reading interval: (minutes)\ninterval=10\n# Also with screen on (could cause issues)\nson=0\n#Toggle debugging\ndebug=false' > /sdcard/ledsettings.sh
+ printf '#!/system/bin/bash\n# Set to 0 to disable, 1 to enable\nenabled=1\n# Set this variable to the desired threshold: (hours)\nthold=1\n# Set the reading interval: (minutes)\ninterval=10\n# Also with screen on (could cause issues)\nson=0\n#Toggle debugging\ndebug=0' > /sdcard/ledsettings.sh
  printf '==========\nPLEASE READ\n==========\n\nUnable to startup, please edit /sdcard/ledsettings.sh before continuing or run again for defaults.\n'
  exit 1
 fi
