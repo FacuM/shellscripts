@@ -52,7 +52,9 @@ then
     then
      echo "LAST NOTIFICATION: $LNOF"
     fi
-   if [ "$LNOF" != "$PREV" ]
+   # Get last notification ID
+   LID=$(printf $LNOF | cut -d '|' -f 7)
+   if [ "$LNOF" != "$PREV" ] && [ "$LID" != "$PID" ]
    then
       # On
       su -c 'echo heartbeat > /sys/class/leds/charging/trigger'
@@ -67,7 +69,9 @@ then
       then
        cat /sys/class/leds/charging/trigger
       fi
+      # Save previous ID to skip execution if equals
       PREV=$LNOF
+      PID=$(printf $LNOF | cut -d '|' -f 7)
     fi
    fi
   done
