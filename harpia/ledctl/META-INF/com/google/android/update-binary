@@ -1,0 +1,19 @@
+#!/sbin/sh
+# This file comes with the LED control package for harpia
+
+export OTC="/proc/self/fd/$2"
+echo "ui_print Setting up..." > "$OTC"
+export TMP="/tmp"
+export ZIP="$3"
+echo "ui_print Extracting files..." > "$OTC"
+unzip -o "$ZIP" -d "$TMP"
+echo "ui_print Mounting system..." > "$OTC"
+mount /dev/block/bootdevice/by-name/system /system
+echo "ui_print Copying files..." > "$OTC"
+cp -f /tmp/ledctl.sh /system/etc/init.d/
+cp -f /tmp/ledsettings.sh /sdcard/
+echo "ui_print Setting permissions..." > "$OTC"
+chmod 0644 /system/etc/init.d/ledctl.sh
+echo "ui_print Done, see you ;-)." > "$OTC"
+echo "ui_print Having trouble? Get support at t.me/somefeak" > "$OTC"
+exit 0
