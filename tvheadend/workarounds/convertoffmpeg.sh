@@ -13,13 +13,20 @@
 ########################################
 
 # Check wether first argument is defined, if not, exit returning a generic error and an usage explanation.
-if [ -z "$1" ]
+if [ -z "$1" ] && [ -z "$2" ]  ||  [ "$1" == '-f' ] && [ -z "$2" ]
 then
- printf 'Usage\n\tbash converttoffmpeg.sh URLtolist\n'
+ printf 'Usage\n\tbash convertoffmpeg.sh http://urltolist\n\tbash convertoffmpeg.sh -f /path/to/file\n'
  exit 1
+else
+ if [ "$1" == '-f' ]
+ then
+  # Copy original list to temporary file in working path.
+  cp "$2" templist
+ else
+  # Fetch the list.
+  wget "$1" -qO templist
+ fi
 fi
-# Fetch the list.
-wget "$1" -qO templist
 # Read the list.
 cat templist |
 # Temporarily break logos so we don't get them passed through the script
