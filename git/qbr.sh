@@ -40,3 +40,4 @@ else
 fi
 printf "Operation completed.\n"
 printf "$i commits reverted.\n"
+exit 0
