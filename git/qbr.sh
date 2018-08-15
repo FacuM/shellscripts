@@ -21,23 +21,31 @@ else
   then
     for c in $(cat $1)
     do
-      printf "Reverting commit $c\n"
+      revstr="\e[93m\e[5mReverting commit $c\e[0m"
+      i=0
+      printf "$revstr"
       git revert --no-edit $c
       if [ $? -eq 0 ]
       then
-        printf "Success reverting, please wait...\n"
+        printf "\r"
+        while [ $i -lt $(printf "$revstr" | wc -m) ]
+        do
+          printf " "
+          i=$(( $i + 1))
+        done
+        printf "\r\e[92mSuccess reverting, please wait...\e[0m\n"
         i=$((i + 1))
       else
-          printf "Unable to continue, please type \"git status\" to see what happened or, if the problem is an already applied commit, just remove it from the list.\n"
-          printf "$i commits reverted.\n"
+          printf "\e[91mUnable to continue, please type \"git status\" to see what happened or, if the problem is an already applied commit, just remove it from the list.\n"
+          printf "$i commits reverted.\e[0m\n"
           exit 1
       fi
     done
   else
-    printf "The specified file ($1) doesn't exist.\n"
+    printf "\e[91mThe specified file ($1) doesn't exist.\e[0m\n"
     exit 1
   fi
 fi
-printf "Operation completed.\n"
-printf "$i commits reverted.\n"
+printf "\e[92m\e[1mOperation completed.\e[0m\n"
+printf "\e[2m$i commits reverted.\e[0m\n"
 exit 0
