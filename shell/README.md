@@ -16,6 +16,6 @@ Go to another directory, then export the previous one in a variable.
 
 ### back
 
-Go back to the previous directory.
+Go back to the previous directory. `back` will also loop your request if ran multiple times without issuing `goto` again.
 
 `back`
