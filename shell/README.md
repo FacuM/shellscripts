@@ -16,6 +16,6 @@ Go to another directory, then export the previous one in a variable.
 
 ### back
 
-`back`
-
 Go back to the previous directory.
+
+`back`
