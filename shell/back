@@ -12,6 +12,6 @@ then
 else
  printf "Back to '$PREVPWD'.\n"
  CURPWD=$PREVPWD
- PREVPWD=$(pwd)
+ export PREVPWD=$(pwd)
  cd $CURPWD
 fi
