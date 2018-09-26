@@ -1,10 +1,10 @@
-# Simple goto/go back scripts.
+# Simple goto/go back scripts
 
 ## Installation
 
  - Clone the repo `git clone https://github.com/FacuM/shellscripts`.
  - Run `bash install`.
- - Restart your shell or run `. ~/bashrc`
+ - Restart your shell or run `. ~/.bashrc`
 
 ## Usage
  
