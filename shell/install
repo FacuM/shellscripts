@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+########################################
+#  Installation script
+########################################
+#
+#  Author: Facundo Montero <facumo.fm@gmail.com>
+#
+########################################
+echo "alias goto='. $PWD/goto'" >> ~/.bashrc
+echo "alias back='. $PWD/back'" >> ~/.bashrc
+exit 0

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+########################################
+#  Simple goto script
+########################################
+#
+#  Author: Facundo Montero <facumo.fm@gmail.com>
+#
+########################################
+if [ -d "$1" ]
+then
+ export PREVPWD=$(pwd)
+ printf "$PREVPWD""\n"
+fi
+cd $1
