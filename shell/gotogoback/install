@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+########################################
+#  Installation script
+########################################
+#
+#  Author: Facundo Montero <facumo.fm@gmail.com>
+#
+########################################
+
+# Get the path to the installation script.
+ME=$(dirname $(realpath $0))
+#   /\        /\
+#   ||        ||
+#
+# According to https://bit.ly/2OjAUd9
+#
+# Build the aliases.
+ALIASES="alias goto='. "$ME"/goto'\nalias back='. "$ME"/back'"
+printf "Aliases will be set as follows:\n\n""$ALIASES""\n\n"
+printf "$ALIASES" >> ~/.bashrc
+echo "Installation completed."
+exit 0
