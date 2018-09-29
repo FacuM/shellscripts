@@ -10,7 +10,7 @@
 # Functions
 function replaces()
 {
- M=$(printf $1 | wc -m)
+ M=$(printf "$1" | wc -m)
  C=0
  O=''
  while [ $C -lt $M ]
@@ -30,8 +30,8 @@ fi
 
 if [ "$2" == 'a' ] || [ "$2" == 'A' ]
 then
- replaces $1, 'A'
+ replaces "$1", 'A'
 else
- replaces $1, 'K'
+ replaces "$1", 'K'
 fi
 exit 0
