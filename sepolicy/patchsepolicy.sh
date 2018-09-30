@@ -7,6 +7,7 @@
 #
 ########################################
 
+unset OUT
 echo "- Patching sepolicies from \"$1\"..."
 while read -r line
 do
@@ -16,8 +17,11 @@ do
   OUT=$(printf "$line" | sed 's/#============= //' | sed 's/ ==============//')
   echo "> Patching file '"$OUT".te'..."
  else
-  echo "$line"
-  echo "$line" >> "sepolicy/$OUT"".te"
+  if [ ! -z $OUT ]
+  then
+   echo "$line"
+   echo "$line" >> "sepolicy/$OUT"".te"
+  fi
  fi
 done < $1
 echo "- Patch completed."
