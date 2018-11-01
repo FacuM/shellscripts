@@ -33,40 +33,36 @@ testinst $?
 
 # Upload file and post in Telegram
 echo "Uploading ""$1""..."
-#FID=$(gdrive upload $1 | cut -d ' ' -f 2 | head -2 | tail -1)
-FID='1Q23pSj-U-k-ZyltzzBweC85qh4jY3OPF'
+FID=$(gdrive upload $1 | cut -d ' ' -f 2 | head -2 | tail -1)
 echo "Sharing ""$1"" (""$FID"")""..."
-#gdrive share $FID
+gdrive share $FID
 INFO=$(gdrive info $FID)
 telegram-send --format html '<b>============</b>'
 DOWNLOAD=$(printf "$INFO" | grep 'DownloadUrl' | cut -d ' ' -f 2)
 NAME=$(printf "$INFO" | grep 'Name' | cut -d ' ' -f 2)
-telegram-send --format html '<b>FILE:</b> '"<a href=\"$DOWNLOAD\">"$NAME"</a>"
+telegram-send --format html '<b>FILE:</b> <a href="'"$DOWNLOAD"'">'"$NAME"'</a>'
 MD5=$(printf "$INFO" | grep 'Md5sum' | cut -d ' ' -f 2)
-telegram-send --format html "<b>MD5:</b> <pre>""$MD5""</pre>"
+telegram-send --format html '<b>MD5:</b> <pre>'"$MD5"'</pre>'
 SHA256=$(sha256sum $1 | cut -d ' ' -f 1)
-telegram-send --format html "<b>SHA256:</b> <pre>""$SHA256""</pre>"
-if [ "$2" != '-u' ]
-then
- telegram-send --format html '<b>NOTE:</b> '"$2"
-fi
+telegram-send --format html '<b>SHA256:</b> <pre>'"$SHA256"'</pre>'
+telegram-send --format html '<b>NOTE:</b> '"$2"
 telegram-send --format html '<b>============</b>'
 STATUS=$?
-echo "NAME: "$NAME
-echo "MD5: "$MD5
-echo "DOWNLOAD: "$DOWNLOAD
-printf "STATUS: "
+echo 'NAME: '$NAME
+echo 'MD5: '$MD5
+echo 'DOWNLOAD: '$DOWNLOAD
+printf 'STATUS: '
 if [ $STATUS -eq 0 ]
 then
- printf "Posted."
+ printf 'Posted.'
 else
- printf "Error."
+ printf 'Error.'
 fi
-printf "\n"
-if [ "$2" == '-u' ] && [ "$2" != '' ]
+printf '\n'
+if [ -f $1 ]
 then
- echo "FILE: "$1
- telegram-send -f $1
+ echo 'FILE: '"$1"'.md5sum'
+ telegram-send -f "$1"".md5sum"
 fi
 exit 0
 
