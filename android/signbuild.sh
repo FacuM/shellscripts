@@ -6,6 +6,8 @@ then
 else
 D=$(date +%Y%m%d)
 echo "The build date is "$(date)"."
+echo "Set up the environment."
+. build/envsetup.sh
 echo "Will now run breakfast for device codename $1".
 breakfast $1 &&
 echo "Making target files package..."
