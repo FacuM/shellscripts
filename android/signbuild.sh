@@ -17,7 +17,7 @@ printf "Signing apks... "
 TARGET=$(ls -tr1 out/dist | tail -1)
 printf "(target from $TARGET)\n"
 croot
-./build/tools/releasetools/sign_target_files_apks -e GoogleCamera.apk,AntHalService.apk,framework-res__auto_generated_rro.apk=$HOME/.android-certs/releasekey -o -d ~/.android-certs \
+./build/tools/releasetools/sign_target_files_apks -e Gallery2.apk,GoogleCamera.apk,AntHalService.apk,framework-res__auto_generated_rro.apk=$HOME/.android-certs/releasekey -o -d ~/.android-certs \
     "out/dist/$TARGET" \
     signed-target_files.zip &&
 echo "Making OTA package..."
@@ -25,5 +25,7 @@ echo "Making OTA package..."
     --block --backup=true \
     signed-target_files.zip \
     $TARGETZIP
+echo '==> All done, writing MD5sum file to '"$TARGETZIP"'.md5sum'
 md5sum "$TARGETZIP" > "$TARGETZIP"'.md5sum'
+echo '==> Success! <=='
 fi
