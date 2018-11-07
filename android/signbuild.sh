@@ -8,8 +8,13 @@ echo "The build date is "$(date)"."
 echo "Set up the environment."
 . build/envsetup.sh
 echo "Will now run breakfast for device codename $1".
-TARGETZIP=$(breakfast $1)
-TARGETZIP=$(echo "$TARGETZIP" | grep TARGET_PRODUCT | sed 's/TARGET_PRODUCT=//' | sed 's/_harpia//')-$(echo "$TARGETZIP" | grep LINEAGE_VERSION | sed 's/LINEAGE_VERSION=//').zip
+TARGETZIP=$(breakfast $1 | sed 's/PLATFORM_VERSION//')
+if echo "$TARGETZIP" | grep lineage
+then
+ TARGETZIP=$(echo "$TARGETZIP" | grep TARGET_PRODUCT | sed 's/TARGET_PRODUCT=//' | sed 's/_harpia//')-$(echo "$TARGETZIP" | grep _VERSION | sed 's/._VERSION=//').zip
+else
+ TARGETZIP=$(echo "$TARGETZIP" | grep _VERSION | sed 's/._VERSION/\n/' | grep = | sed 's/=//').zip
+fi
 echo '==> Target filename is '"$TARGETZIP"
 echo "Making target files package..."
 mka -j$(nproc --all) target-files-package dist &&
