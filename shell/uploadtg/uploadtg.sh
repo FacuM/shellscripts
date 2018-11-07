@@ -11,6 +11,10 @@
 #
 ########################################
 
+# Configuration
+api_key='<your bot api key>'
+chat_id='<your chat id (group, channel, user, etc.)>'
+
 # Function definition
 
 # testinst: reports an error if a required dependency can't be found.
@@ -26,8 +30,6 @@ function testinst()
 # Main
 
 # Check dependencies
-telegram-send 2>&1 > /dev/null
-testinst $?
 gdrive 2>&1 > /dev/null
 testinst $?
 
@@ -37,19 +39,26 @@ FID=$(gdrive upload $1 | cut -d ' ' -f 2 | head -2 | tail -1)
 echo "Sharing ""$1"" (""$FID"")""..."
 gdrive share $FID
 INFO=$(gdrive info $FID)
-telegram-send --format html '<b>============</b>'
+OUTPUT='**============**'
 DOWNLOAD=$(printf "$INFO" | grep 'DownloadUrl' | cut -d ' ' -f 2)
 NAME=$(printf "$INFO" | grep 'Name' | cut -d ' ' -f 2)
-telegram-send --format html '<b>FILE:</b> <a href="'"$DOWNLOAD"'">'"$NAME"'</a>'
+OUTPUT="$OUTPUT""
+**FILE:** [""$NAME""](""$DOWNLOAD"")"
 MD5=$(printf "$INFO" | grep 'Md5sum' | cut -d ' ' -f 2)
-telegram-send --format html '<b>MD5:</b> <pre>'"$MD5"'</pre>'
+OUTPUT="$OUTPUT"'
+**MD5:** `'"$MD5"'`'
 SHA256=$(sha256sum $1 | cut -d ' ' -f 1)
-telegram-send --format html '<b>SHA256:</b> <pre>'"$SHA256"'</pre>'
-telegram-send --format html '<b>NOTE:</b> '"$2"
-telegram-send --format html '<b>============</b>'
+OUTPUT="$OUTPUT"'
+**SHA256:** `'"$SHA256"'`'
+OUTPUT="$OUTPUT""
+**NOTE:** ""$2"""
+OUTPUT="$OUTPUT"'
+**============**'
+curl "https://api.telegram.org/bot""$api_key""/sendMessage" -d "{ \"chat_id\":\"$chat_id\", \"text\":\"$OUTPUT\", \"parse_mode\":\"markdown\"}" -H "Content-Type: application/json"
 STATUS=$?
 echo 'NAME: '$NAME
 echo 'MD5: '$MD5
+echo 'SHA256SUM: '$SHA256
 echo 'DOWNLOAD: '$DOWNLOAD
 printf 'STATUS: '
 if [ $STATUS -eq 0 ]
@@ -62,7 +71,6 @@ printf '\n'
 if [ -f $1 ]
 then
  echo 'FILE: '"$1"'.md5sum'
- telegram-send -f "$1"".md5sum"
+ curl "https://api.telegram.org/bot""$api_key""/sendDocument" -F chat_id="$chat_id" -F document=@"$1"".md5sum" -H 'Content-Type: multipart/form-data'
 fi
 exit 0
-
