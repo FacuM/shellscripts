@@ -9,9 +9,10 @@ echo "Set up the environment."
 . build/envsetup.sh
 echo "Will now run breakfast for device codename $1".
 TARGETZIP=$(breakfast $1 | sed 's/PLATFORM_VERSION//')
-if echo "$TARGETZIP" | grep lineage
+echo "$TARGETZIP" | grep lineage > /dev/null
+if [ $? -eq 0 ]
 then
- TARGETZIP=$(echo "$TARGETZIP" | grep TARGET_PRODUCT | sed 's/TARGET_PRODUCT=//' | sed 's/_harpia//')-$(echo "$TARGETZIP" | grep _VERSION | sed 's/._VERSION=//').zip
+ TARGETZIP=$(echo "$TARGETZIP" | grep TARGET_PRODUCT | sed 's/TARGET_PRODUCT=//' | sed 's/_harpia//')-$(echo "$TARGETZIP" | grep _VERSION | sed 's/._VERSION/\n/' | grep = | sed 's/=//').zip
 else
  TARGETZIP=$(echo "$TARGETZIP" | grep _VERSION | sed 's/._VERSION/\n/' | grep = | sed 's/=//').zip
 fi
