@@ -7,8 +7,10 @@ else
 echo "The build date is "$(date)"."
 echo "Set up the environment."
 . build/envsetup.sh
-echo "Will now run breakfast for device codename $1".
-TARGETZIP=$(breakfast $1 | sed 's/PLATFORM_VERSION//')
+echo "Will now run breakfast for device codename $1"
+breakfast $1 2>&1 > tmp
+TARGETZIP=$(cat tmp | sed 's/PLATFORM_VERSION//')
+rm tmp
 echo "$TARGETZIP" | grep lineage > /dev/null
 if [ $? -eq 0 ]
 then
