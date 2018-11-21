@@ -16,7 +16,7 @@ if [ $? -eq 0 ]
 then
  TARGETZIP=$(echo "$TARGETZIP" | grep TARGET_PRODUCT | sed 's/TARGET_PRODUCT=//' | sed 's/_harpia//')-$(echo "$TARGETZIP" | grep _VERSION | sed 's/._VERSION/\n/' | grep = | sed 's/=//').zip
 else
- TARGETZIP=$(echo "$TARGETZIP" | grep _VERSION | sed 's/._VERSION/\n/' | grep = | sed 's/=//').zip
+ TARGETZIP=$(echo "$TARGETZIP" | grep _VERSION | sed 's/._VERSION/\n/' | grep = | sed 's/=//' | head -1).zip
 fi
 echo '==> Target filename is '"$TARGETZIP"
 echo "Making target files package..."
