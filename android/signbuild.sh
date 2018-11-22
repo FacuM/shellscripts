@@ -7,8 +7,23 @@ else
 echo "The build date is "$(date)"."
 echo "Set up the environment."
 . build/envsetup.sh
-echo "Will now run breakfast for device codename $1"
-breakfast $1 2>&1 > tmp
+if [ -z $2 ]
+then
+ echo "Will now run breakfast for device codename $1"
+ breakfast $1 2>&1 > tmp
+else
+ echo "Will now run lunch using string '$2'."
+ TEST=$(echo "$2" | grep 'eng') && echo "
+ =====================================
+ |                                   |
+ |               WARNING             |
+ |                                   |
+ | This is an eng build, expect lag  |
+ | and other unexpected behavior.    |
+ |                                   |
+ ====================================="
+ lunch $2 > tmp
+fi
 TARGETZIP=$(cat tmp | sed 's/PLATFORM_VERSION//')
 rm tmp
 echo "$TARGETZIP" | grep lineage > /dev/null
