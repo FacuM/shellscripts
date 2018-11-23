@@ -36,11 +36,12 @@ then
 This script must be run from the source shell.
 
 Usage:
-       . los.sh [reset]|[clobber]
-  source los.sh [reset]|[clobber]
+       . los.sh [reset]|[clobber]|[ns]
+  source los.sh [reset]|[clobber]|[ns]
 
 reset - Remove old source (if existing) before building.
-clobber - Clean environment before building.'
+clobber - Clean environment before building.
+ns - Do not sync, just build.'
  exit 1
 fi
 
@@ -100,8 +101,11 @@ then
  if [ $? -eq 0 ]
  then
   wget -q "$MANIFEST_URL" -O "$WORKING_DIR"'/.repo/local_manifests/'"$BREAKFAST_DEVICE"'.xml' 2>&1 | tee -a $LOG_PATH
-  echo '=> Syncing repo...' | tee -a $LOG_PATH
-  repo sync $REPO_SYNC_OPTS 2>&1 | tee -a $LOG_PATH
+  if [ "$1" != 'ns' ]
+  then
+   echo '=> Syncing repo...' | tee -a $LOG_PATH
+   repo sync $REPO_SYNC_OPTS 2>&1 | tee -a $LOG_PATH
+  fi
   if [ $? -eq 0 ]
   then
    if [ "$1" == 'clobber' ]
