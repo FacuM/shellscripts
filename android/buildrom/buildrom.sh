@@ -144,9 +144,16 @@ I       Publicly signed build.    I
    then
     echo '
 ===================================
+I              INFO               I
+I                                 I
+I     Compilation completed!      I
+===================================' | tee -a $LOG_PATH
+   else
+    echo '
+===================================
 I              ERROR              I
 I                                 I
-I    Build compilation failed.    I
+I       Compilation failed.       I
 ===================================' | tee -a $LOG_PATH
    fi
   else
