@@ -88,6 +88,7 @@ if [ -d "$WORKING_DIR" ]
 then
  echo 'Success creating working directory.' | tee -a $LOG_PATH
  echo 'ROM: '"$ROM_NAME"' '"$ROM_VERSION" | tee -a $LOG_PATH
+ echo 'DEVICE: '"$BREAKFAST_DEVICE" | tee -a $LOG_PATH
  echo 'DATE: '$(date '+%Y-%m-%d %H:%M:%S') | tee -a $LOG_PATH
  echo 'LOG: '"$LOG_PATH" | tee -a $LOG_PATH
  echo 'MANIFEST: '"$MANIFEST_URL" | tee -a $LOG_PATH
