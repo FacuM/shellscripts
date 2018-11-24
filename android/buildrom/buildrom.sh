@@ -17,8 +17,6 @@ ROM_NAME='LineageOS'
 ROM_VERSION='16.0'
 ROM_LUNCH='lineage' # Used in "lunch lineage_device-userdebug" and "brunch lineage_device-userdebug"
 BUILD_DATE=$(date '+%Y-%m-%d_%H-%M-%S')
-LOG_FILENAME="$ROM_NAME"'_'"$ROM_VERSION"'_'"$BUILD_DATE"'.txt'
-LOG_PATH="$WORKING_DIR"'/../'
 MANIFEST_URL='https://raw.githubusercontent.com/Harpia-development/los_harpia/master/harpia.xml'
 # Signed build?
 SIGN=1
@@ -28,6 +26,15 @@ REPO_INIT_OPTS='--depth=1 --no-clone-bundle'
 REPO_SYNC_OPTS='--force-sync --force-broken --current-branch --no-tags --no-clone-bundle --optimized-fetch --prune'
 # REPO_SYNC_THREADS can be 'auto' or integer
 REPO_SYNC_THREADS=32
+# => Logging
+LOG_FILENAME="$ROM_NAME"'_'"$ROM_VERSION"'_'"$BUILD_DATE"'.txt'
+LOG_PATH="$WORKING_DIR"'/..'
+LOG_DIR=$LOG_PATH
+# USERNAME can be 'auto' to match $USER or string.
+#
+# This section replaces the real username with the one on $USERNAME
+# so that you can publicly share your logs.
+USERNAME='auto'
 
 # This script must be run from the source shell, if not, crash.
 if [ "${BASH_SOURCE[0]}" == "${0}" ]
@@ -55,7 +62,7 @@ else
 fi
 
 # Check if $LOG_PATH is writable
-touch "$LOG_PATH"'.test'
+touch "$LOG_PATH"'/.test'
 if [ $? -ne 0 ]
 then
  echo '
@@ -67,8 +74,8 @@ I  Will not log anything.         I
 ==================================='
  LOG_PATH='/dev/null'
 else
- rm "$LOG_PATH"'.test'
- LOG_PATH="$LOG_PATH""$LOG_FILENAME"
+ rm "$LOG_PATH"'/.test'
+ LOG_PATH="$LOG_PATH"'/'"$LOG_FILENAME"
  echo '=> Enabled logging!' | tee -a $LOG_PATH
 fi
 
@@ -172,4 +179,15 @@ I                                 I
 I    Failed to initialize repo    I
 ===================================' | tee -a $LOG_PATH
  fi
+fi
+
+# Handle logger privacy
+if [ "$USERNAME" != 'auto' ]
+then
+ echo '=> Hiding logged username...' | tee -a $LOG_PATH
+ cat $LOG_PATH | sed 's/'"$USER"'/'"$USERNAME"'/g' > "$LOG_DIR"'/tmp'
+ rm $LOG_PATH
+ # Using 'cp' and 'rm' as 'mv' has issues on some filesystems.
+ cp "$LOG_DIR"'/tmp' $LOG_PATH
+ rm "$LOG_DIR"'/tmp'
 fi
