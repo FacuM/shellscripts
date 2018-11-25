@@ -79,7 +79,7 @@ A super outdated and horrible script meant to optimize a kernel build process. D
 parsefnet
 ---------
 
-Easily parse all keys from freesite. (Freenet)
+Easily parse all keys from a freesite. (Freenet)
 
 
 reccrypt
