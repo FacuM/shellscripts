@@ -43,7 +43,7 @@ git
 
 #### qbp
 
-Quikly process a conflictive cherry-pick, skipping empty commits and workarounding some git issues.
+Quickly process a conflictive cherry-pick, skipping empty commits and workarounding some git issues.
 
 #### qbr
 
