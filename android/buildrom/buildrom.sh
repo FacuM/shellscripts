@@ -148,7 +148,7 @@ I       Publicly signed build.    I
     . build/envsetup.sh 2>&1 | tee -a $LOG_PATH
     brunch "$ROM_LUNCH"_"$BREAKFAST_DEVICE"-userdebug 2>&1 | tee -a $LOG_PATH
    fi
-   if [ $? -eq 0 ]
+   if [ $? -eq 0 ] && [ "$SIGNSTAT" != 'err' ]
    then
     echo '
 ===================================
