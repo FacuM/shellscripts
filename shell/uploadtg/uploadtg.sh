@@ -11,6 +11,7 @@
 #
 ########################################
 
+# Configuration
 if [ ! -f ~/.uploadtg_config.sh ]
 then
  echo 'No config file found at '"$HOME"'/.uploadtg_config.sh.'
