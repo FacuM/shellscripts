@@ -52,6 +52,19 @@ function testinst()
 
 # Main
 
+# Check if a file's been provided.
+if [ -z $1 ]
+then
+ echo "You didn't provide any file to upload. Aborting..."
+ exit 1
+else
+ if [ ! -f "$1" ]
+ then
+  echo "No such file or directory while looking for ""$1"'. Aborting....'
+  exit 1
+ fi
+fi
+
 # Check dependencies
 gdrive 2>&1 > /dev/null
 testinst $?
