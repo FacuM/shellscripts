@@ -1,7 +1,7 @@
 shellscripts
 ------------
 
-Some shell scripts made my boring moments.
+Some shell scripts made in my boring moments.
 
 # What's all this?
 
