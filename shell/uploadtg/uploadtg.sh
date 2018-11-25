@@ -11,9 +11,31 @@
 #
 ########################################
 
-# Configuration
+if [ ! -f ~/.uploadtg_config.sh ]
+then
+ echo 'No config file found at '"$HOME"'/.uploadtg_config.sh.'
+ echo "# Configuration
 api_key='<your bot api key>'
-chat_id='<your chat id (group, channel, user, etc.)>'
+chat_id='<your chat id (group, channel, user, etc.)>'" > ~/.uploadtg_config.sh
+ if [ $? -eq 0 ]
+ then
+  echo 'Defaults were written to '"$HOME"'/.uploadtg_config.sh.
+You can now run your favorite editor and add your credentials on it.'
+ else
+  echo 'Unable to write defaults. Do you have write permission on '"$HOME"'?'
+ fi
+ exit 1
+else
+ if [ -f ~/.uploadtg_config.sh ]
+ then
+  . ~/.uploadtg_config.sh
+  if [ "$api_key" == '<your bot api key>' ] || [ "$chat_id" == '<your chat id (group, channel, user, etc.)>' ]
+  then
+   echo 'One or more variables are stil using their default values. Edit the config file and try again.'
+   exit 1
+  fi
+ fi
+fi
 
 # Function definition
 
