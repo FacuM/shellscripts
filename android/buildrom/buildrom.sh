@@ -48,7 +48,8 @@ Usage:
 
 reset - Remove old source (if existing) before building.
 clobber - Clean environment before building.
-ns - Do not sync, just build.'
+ns - Do not sync, just build.
+js - Just sync, do not build.'
  exit 1
 fi
 
@@ -62,6 +63,7 @@ else
 fi
 
 # Check if $LOG_PATH is writable
+mkdir -p "$WORKING_DIR"
 touch "$LOG_PATH"'/.test'
 if [ $? -ne 0 ]
 then
@@ -91,7 +93,6 @@ I        Removing old source.     I
 ===================================' | tee -a $LOG_PATH
  rm -Rf "$WORKING_DIR"
 fi
-mkdir -p "$WORKING_DIR"
 if [ -d "$WORKING_DIR" ]
 then
  echo 'Success creating working directory.' | tee -a $LOG_PATH
@@ -113,7 +114,7 @@ then
    echo '=> Syncing repo...' | tee -a $LOG_PATH
    repo sync $REPO_SYNC_OPTS 2>&1 | tee -a $LOG_PATH
   fi
-  if [ $? -eq 0 ]
+  if [ $? -eq 0 ] && [ "$1" != 'js' ]
   then
    if [ "$1" == 'clobber' ]
    then
@@ -164,12 +165,22 @@ I       Compilation failed.       I
 ===================================' | tee -a $LOG_PATH
    fi
   else
-   echo '
+   if [ "$1" == 'js' ]
+   then
+    echo '
+===================================
+I              INFO               I
+I                                 I
+I          Done syncing!          I
+===================================' | tee -a $LOG_PATH
+   else
+    echo '
 ===================================
 I              ERROR              I
 I                                 I
 I       Failed to sync repo       I
 ===================================' | tee -a $LOG_PATH
+   fi
   fi
  else
   echo '
