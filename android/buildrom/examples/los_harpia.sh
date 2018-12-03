@@ -44,5 +44,12 @@ if [ -f "$HOME"'/buildrom.sh' ]
 then
  . "$HOME"'/buildrom.sh'
 else
+ echo "$HOME"'/buildrom.sh not found, downloading...'
  wget -q 'https://raw.githubusercontent.com/FacuM/shellscripts/master/android/buildrom/buildrom.sh' -O "$HOME"'/buildrom.sh'
+ if [ -f "$HOME"'/buildrom.sh' ]
+ then
+  . "$HOME"'/buildrom.sh'
+ else
+  echo 'Unable to download buildrom.sh, please try again.'
+ fi
 fi
