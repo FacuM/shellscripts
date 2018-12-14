@@ -137,6 +137,11 @@ I              INFO               I
 I                                 I
 I     Compilation completed!      I
 ===================================' | tee -a $LOG_PATH
+     # Run "$ON_SUCCESS"
+     if [ "$ON_SUCCESS" != '' ]
+     then
+      $ON_SUCCESS
+     fi
     else
      echo '
 ===================================

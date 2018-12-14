@@ -28,6 +28,7 @@ REPO_INIT_OPTS='--depth=1 --no-clone-bundle'
 REPO_SYNC_OPTS='--force-sync --force-broken --current-branch --no-tags --no-clone-bundle --optimized-fetch --prune'
 # REPO_SYNC_THREADS can be 'auto' or integer
 REPO_SYNC_THREADS=32
+ON_SUCCESS="$HOME"'/shutdown.sh'
 # => Logging
 LOG_FILENAME="$ROM_NAME"'_'"$ROM_VERSION"'_'"$BUILD_DATE"'.txt'
 LOG_PATH="$WORKING_DIR"'/..'
