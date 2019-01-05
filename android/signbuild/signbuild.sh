@@ -10,7 +10,14 @@ else
  if [ -z $2 ]
  then
   echo "=> Will now run breakfast for device codename $1"
-  breakfast $1 2>&1 > tmp
+  breakfast sample 2>&1 > /dev/null
+  if [ $? -eq 127 ]
+  then
+    echo "WARN: This ROM doesn't seem to support breakfast, trying with lunch instead."
+    lunch "$ROM_LUNCH"'_'"$BREAKFAST_DEVICE"'-userdebug' > tmp
+  else
+    breakfast $1 2>&1 > tmp
+  fi
  else
   echo "=> Will now run lunch using string '$2'."
   TEST=$(echo "$2" | grep 'eng') && echo "
