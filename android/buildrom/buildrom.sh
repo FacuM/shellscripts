@@ -81,7 +81,7 @@ I        Removing old source.     I
   echo 'DEVICE: '"$BREAKFAST_DEVICE" | tee -a $LOG_PATH
   echo 'DATE: '$(date '+%Y-%m-%d %H:%M:%S') | tee -a $LOG_PATH
   echo 'LOG: '"$LOG_PATH" | tee -a $LOG_PATH
-  echo 'MANIFEST: '"$MANIFEST_URL" | tee -a $LOG_PATH
+  echo 'MANIFEST: '"$DEVICE_MANIFEST_URL" | tee -a $LOG_PATH
   cd "$WORKING_DIR"
   echo '=> Initializing repo...' | tee -a $LOG_PATH
   repo init -u $ROM_MANIFEST_URL -b $ROM_MANIFEST_BRANCH $REPO_INIT_OPTS 2>&1 | tee -a $LOG_PATH
