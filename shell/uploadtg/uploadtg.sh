@@ -52,7 +52,7 @@ TESTERS_EMOJI=$'\xF0\x9F\x94\x8D' # (magnifying glass left)
 # testinst: reports an error if a required dependency can't be found.
 function testinst()
 {
- if [ $1 == 127 ]
+ if [ $1 -eq 127 ]
  then
   echo "Some dependencies haven't been met, please check the errors above."
   exit 1
@@ -64,7 +64,7 @@ function testinst()
 function drawSeparator
 {
  COUNT=0; OUT=''
- while [ "$COUNT" != "$1" ]
+ while [ $COUNT -lt $1 ]
  do
   OUT="$OUT""$SEPARATOR"
   COUNT=$(( $COUNT + 1 ))
