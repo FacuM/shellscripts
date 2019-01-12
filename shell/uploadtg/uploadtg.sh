@@ -66,7 +66,7 @@ else
 fi
 
 # Check dependencies
-gdrive 2>&1 > /dev/null
+gdrive > /dev/null 2> /dev/null
 testinst $?
 
 # Input controls
