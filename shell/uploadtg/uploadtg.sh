@@ -45,6 +45,7 @@ MAINTAINER_EMOJI=$'\xF0\x9F\x91\xB7' # (constructor)
 MD5_EMOJI=$'\xF0\x9F\x92\xBF' # (cd)
 SHA256_EMOJI=$'\xF0\x9F\x93\x80' # (dvd)
 NOTE_EMOJI=$'\xF0\x9F\x93\x9C' # (scroll)
+TESTERS_EMOJI=$'\xF0\x9F\x94\x8D' # (magnifying glass left)
 
 # Function definition
 
@@ -126,6 +127,14 @@ If you ever forget this again or simply don't want to set it up, I'll assume tha
  fi
 fi
 
+# Testers
+if [ "$5" != '' ]
+then
+ TESTERS="
+
+$TESTERS_EMOJI"' ''The maintainer is calling to '"$5"' to test this release!'
+fi
+
 # Check dependencies
 gdrive > /dev/null 2> /dev/null
 testinst $?
@@ -151,7 +160,7 @@ OUTPUT="$OUTPUT""
 $SHA256_EMOJI"' ''**SHA256:** `'"$SHA256"'`'
 OUTPUT="$OUTPUT""
 $NOTE_EMOJI"' ''**NOTE:** '"$NOTE"""
-OUTPUT="$OUTPUT""
+OUTPUT="$OUTPUT""$TESTERS""
 $(drawSeparator '9')"
 curl "https://api.telegram.org/bot""$api_key""/sendMessage" -d "{ \"chat_id\":\"$chat_id\", \"text\":\"$OUTPUT\", \"parse_mode\":\"markdown\"}" -H "Content-Type: application/json" -s > /dev/null
 STATUS=$?
