@@ -69,6 +69,16 @@ fi
 gdrive 2>&1 > /dev/null
 testinst $?
 
+# Input controls
+
+# Note testing
+if [ "$2" != '' ]
+then
+ NOTE="$2"
+else
+ NOTE='No release notes have been provided.'
+fi
+
 # Upload file and post in Telegram
 echo "Uploading ""$1""..."
 FID=$(gdrive upload $1 | cut -d ' ' -f 2 | head -2 | tail -1)
@@ -87,7 +97,7 @@ SHA256=$(sha256sum $1 | cut -d ' ' -f 1)
 OUTPUT="$OUTPUT"'
 **SHA256:** `'"$SHA256"'`'
 OUTPUT="$OUTPUT""
-**NOTE:** ""$2"""
+**NOTE:** ""$NOTE"""
 OUTPUT="$OUTPUT"'
 **============**'
 curl "https://api.telegram.org/bot""$api_key""/sendMessage" -d "{ \"chat_id\":\"$chat_id\", \"text\":\"$OUTPUT\", \"parse_mode\":\"markdown\"}" -H "Content-Type: application/json"
