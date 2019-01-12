@@ -10,7 +10,7 @@ else
  if [ -z $2 ]
  then
   echo "=> Will now run breakfast for device codename $1"
-  breakfast sample 2>&1 > /dev/null
+  breakfast sample > /dev/null 2> /dev/null
   if [ $? -eq 127 ]
   then
     echo "WARN: This ROM doesn't seem to support breakfast, trying with lunch instead."
