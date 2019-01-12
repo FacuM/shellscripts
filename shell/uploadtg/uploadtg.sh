@@ -38,6 +38,14 @@ else
  fi
 fi
 
+# Emojis
+SEPARATOR=$'\xE2\x9E\x96' # (minus symbol)
+FILE_EMOJI=$'\xF0\x9F\x93\x84' # (page up)
+MAINTAINER_EMOJI=$'\xF0\x9F\x91\xB7' # (constructor)
+MD5_EMOJI=$'\xF0\x9F\x92\xBF' # (cd)
+SHA256_EMOJI=$'\xF0\x9F\x93\x80' # (dvd)
+NOTE_EMOJI=$'\xF0\x9F\x93\x9C' # (scroll)
+
 # Function definition
 
 # testinst: reports an error if a required dependency can't be found.
@@ -48,6 +56,19 @@ function testinst()
   echo "Some dependencies haven't been met, please check the errors above."
   exit 1
  fi
+}
+
+
+# drawSeparator: draws a separator of # length off minus emojis
+function drawSeparator
+{
+ COUNT=0; OUT=''
+ while [ "$COUNT" != "$1" ]
+ do
+  OUT="$OUT""$SEPARATOR"
+  COUNT=$(( $COUNT + 1 ))
+ done
+ echo "$OUT"
 }
 
 # Main
@@ -65,13 +86,9 @@ else
  fi
 fi
 
-# Check dependencies
-gdrive > /dev/null 2> /dev/null
-testinst $?
-
 # Input controls
 
-# Note testing
+# Note
 if [ "$2" != '' ]
 then
  NOTE="$2"
@@ -79,27 +96,63 @@ else
  NOTE='No release notes have been provided.'
 fi
 
+# Maintainer
+if [ "$3" != '' ]
+then
+ MAINTAINER="$3"
+ if [ "$4" != '' ]
+ then
+  MAINTAINER="$MAINTAINER"' ('"$4"')'
+ fi
+else
+ git > /dev/null 2> /dev/null
+ if [ $? -ne 127 ]
+ then
+  GIT_USERNAME=$(git config user.name)
+  GIT_EMAIL=$(git config user.email)
+  MAINTAINER="$GIT_USERNAME"' ('"$GIT_EMAIL"')'
+ else
+  if [ "$NO_AUTHOR_CHECK" == 'true' ]
+  then
+   echo "NOTICE: Assuming you're an anonymous maintainer as you didn't provide any authorship details."
+   MAINTAINER='Anonymous'
+  else
+   echo "You didn't specify an author name and/or email address, try setting either 'Anonymous', a proper author name/email combo or installing and configuring Git.
+
+If you ever forget this again or simply don't want to set it up, I'll assume that you're an Anonymous maintainer."
+   echo "NO_AUTHOR_CHECK='true'" >> ~/.uploadtg_config.sh
+   exit 1
+  fi
+ fi
+fi
+
+# Check dependencies
+gdrive > /dev/null 2> /dev/null
+testinst $?
+
 # Upload file and post in Telegram
 echo "Uploading ""$1""..."
 FID=$(gdrive upload $1 | cut -d ' ' -f 2 | head -2 | tail -1)
 echo "Sharing ""$1"" (""$FID"")""..."
 gdrive share $FID
 INFO=$(gdrive info $FID)
-OUTPUT='**============**'
+OUTPUT="$(drawSeparator '9')"
 DOWNLOAD=$(printf "$INFO" | grep 'DownloadUrl' | cut -d ' ' -f 2)
 NAME=$(printf "$INFO" | grep 'Name' | cut -d ' ' -f 2)
 OUTPUT="$OUTPUT""
-**FILE:** [""$NAME""](""$DOWNLOAD"")"
-MD5=$(printf "$INFO" | grep 'Md5sum' | cut -d ' ' -f 2)
-OUTPUT="$OUTPUT"'
-**MD5:** `'"$MD5"'`'
-SHA256=$(sha256sum $1 | cut -d ' ' -f 1)
-OUTPUT="$OUTPUT"'
-**SHA256:** `'"$SHA256"'`'
+$FILE_EMOJI"' '"**FILE:** [""$NAME""](""$DOWNLOAD"")"
 OUTPUT="$OUTPUT""
-**NOTE:** ""$NOTE"""
-OUTPUT="$OUTPUT"'
-**============**'
+$MAINTAINER_EMOJI"' ''**MAINTAINER: '"$MAINTAINER"
+MD5=$(printf "$INFO" | grep 'Md5sum' | cut -d ' ' -f 2)
+OUTPUT="$OUTPUT""
+$MD5_EMOJI"' ''**MD5:** `'"$MD5"'`'
+SHA256=$(sha256sum $1 | cut -d ' ' -f 1)
+OUTPUT="$OUTPUT""
+$SHA256_EMOJI"' ''**SHA256:** `'"$SHA256"'`'
+OUTPUT="$OUTPUT""
+$NOTE_EMOJI"' ''**NOTE:** '"$NOTE"""
+OUTPUT="$OUTPUT""
+$(drawSeparator '9')"
 curl "https://api.telegram.org/bot""$api_key""/sendMessage" -d "{ \"chat_id\":\"$chat_id\", \"text\":\"$OUTPUT\", \"parse_mode\":\"markdown\"}" -H "Content-Type: application/json" -s > /dev/null
 STATUS=$?
 echo 'NAME: '$NAME
