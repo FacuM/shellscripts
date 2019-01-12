@@ -100,7 +100,7 @@ OUTPUT="$OUTPUT""
 **NOTE:** ""$NOTE"""
 OUTPUT="$OUTPUT"'
 **============**'
-curl "https://api.telegram.org/bot""$api_key""/sendMessage" -d "{ \"chat_id\":\"$chat_id\", \"text\":\"$OUTPUT\", \"parse_mode\":\"markdown\"}" -H "Content-Type: application/json"
+curl "https://api.telegram.org/bot""$api_key""/sendMessage" -d "{ \"chat_id\":\"$chat_id\", \"text\":\"$OUTPUT\", \"parse_mode\":\"markdown\"}" -H "Content-Type: application/json" -s > /dev/null
 STATUS=$?
 echo 'NAME: '$NAME
 echo 'MD5: '$MD5
@@ -117,6 +117,6 @@ printf '\n'
 if [ -f $1 ]
 then
  echo 'FILE: '"$1"'.md5sum'
- curl "https://api.telegram.org/bot""$api_key""/sendDocument" -F chat_id="$chat_id" -F document=@"$1"".md5sum" -H 'Content-Type: multipart/form-data'
+ curl "https://api.telegram.org/bot""$api_key""/sendDocument" -F chat_id="$chat_id" -F document=@"$1"".md5sum" -H 'Content-Type: multipart/form-data' -s > /dev/null
 fi
 exit 0
