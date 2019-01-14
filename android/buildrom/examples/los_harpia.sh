@@ -37,7 +37,7 @@ LOG_DIR=$LOG_PATH
 #
 # This section replaces the real username with the one on $USERNAME
 # so that you can publicly share your logs.
-USERNAME='auto'
+USERNAME='HIDDEN'
 
 # =======> Don't edit anything after this line.
 LAUNCH_NOW='yes'
