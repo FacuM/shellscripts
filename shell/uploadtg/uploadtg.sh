@@ -39,13 +39,14 @@ else
 fi
 
 # Emojis
-SEPARATOR=$'\xE2\x9E\x96' # (minus symbol)
-FILE_EMOJI=$'\xF0\x9F\x93\x84' # (page up)
+SEPARATOR=$'\xE2\x9E\x96'            # (minus symbol)
+FILE_EMOJI=$'\xF0\x9F\x93\x84'       # (page up)
 MAINTAINER_EMOJI=$'\xF0\x9F\x91\xB7' # (constructor)
-MD5_EMOJI=$'\xF0\x9F\x92\xBF' # (cd)
-SHA256_EMOJI=$'\xF0\x9F\x93\x80' # (dvd)
-NOTE_EMOJI=$'\xF0\x9F\x93\x9C' # (scroll)
-TESTERS_EMOJI=$'\xF0\x9F\x94\x8D' # (magnifying glass left)
+MD5_EMOJI=$'\xF0\x9F\x92\xBF'        # (cd)
+SHA256_EMOJI=$'\xF0\x9F\x93\x80'     # (dvd)
+NOTE_EMOJI=$'\xF0\x9F\x93\x9C'       # (scroll)
+TESTERS_EMOJI=$'\xF0\x9F\x94\x8D'    # (magnifying glass left)
+LOG_EMOJI=$'\xF0\x9F\x93\x9F'        # (pager)
 
 # Function definition
 
@@ -139,6 +140,12 @@ fi
 gdrive > /dev/null 2> /dev/null
 testinst $?
 
+# Set log if path given
+if [ -z $LOG_PATH ] && [ "$6" != '' ]
+then
+ LOG_PATH="$6"
+fi
+
 # Upload file and post in Telegram
 echo "Uploading ""$1""..."
 FID=$(gdrive upload $1 | cut -d ' ' -f 2 | head -2 | tail -1)
@@ -160,7 +167,13 @@ OUTPUT="$OUTPUT""
 $SHA256_EMOJI"' ''**SHA256:** `'"$SHA256"'`'
 OUTPUT="$OUTPUT""
 $NOTE_EMOJI"' ''**NOTE:** '"$NOTE"""
-OUTPUT="$OUTPUT""$TESTERS""
+OUTPUT="$OUTPUT""$TESTERS"
+if [ ! -z $LOG_PATH ]
+then
+ OUTPUT="$OUTPUT""
+$LOG_EMOJI"' ''The maintainer attached a build log to this release.'
+fi
+OUTPUT="$OUTPUT""
 $(drawSeparator '9')"
 curl "https://api.telegram.org/bot""$api_key""/sendMessage" -d "{ \"chat_id\":\"$chat_id\", \"text\":\"$OUTPUT\", \"parse_mode\":\"markdown\"}" -H "Content-Type: application/json" -s > /dev/null
 STATUS=$?
@@ -180,5 +193,10 @@ if [ -f $1 ]
 then
  echo 'FILE: '"$1"'.md5sum'
  curl "https://api.telegram.org/bot""$api_key""/sendDocument" -F chat_id="$chat_id" -F document=@"$1"".md5sum" -H 'Content-Type: multipart/form-data' -s > /dev/null
+fi
+if [ ! -z $LOG_PATH ]
+then
+ echo 'LOG: '"$1"'.md5sum'
+ curl "https://api.telegram.org/bot""$api_key""/sendDocument" -F chat_id="$chat_id" -F document=@"$LOG_PATH" -H 'Content-Type: multipart/form-data' -s > /dev/null
 fi
 exit 0
