@@ -18,8 +18,8 @@ then
 This script must be run from the source shell.
 
 Usage:
-       . configname.sh [reset]|[clobber]|[ns]
-  source configname.sh [reset]|[clobber]|[ns]
+       . configname.sh [reset]|[clobber]|[ns] [release notes] [maintainership] [testers]
+  source configname.sh [reset]|[clobber]|[ns] [release notes] [maintainership] [testers]
 
 reset - Remove old source (if existing) before building.
 clobber - Clean environment before building.
@@ -55,10 +55,10 @@ I                                 I
 I  Log path not writable.         I
 I  Will not log anything.         I
 ==================================='
-  LOG_PATH='/dev/null'
+  export LOG_PATH='/dev/null'
  else
   rm "$LOG_PATH"'/.test'
-  LOG_PATH="$LOG_PATH"'/'"$LOG_FILENAME"
+  export LOG_PATH="$LOG_PATH"'/'"$LOG_FILENAME"
   echo '=> Enabled logging!' | tee -a $LOG_PATH
  fi
 
@@ -137,6 +137,7 @@ I              INFO               I
 I                                 I
 I     Compilation completed!      I
 ===================================' | tee -a $LOG_PATH
+     export PASS='yes'
      # Run "$ON_SUCCESS"
      if [ "$ON_SUCCESS" != '' ]
      then
@@ -187,5 +188,30 @@ I    Failed to initialize repo    I
   # Using 'cp' and 'rm' as 'mv' has issues on some filesystems.
   cp "$LOG_DIR"'/tmp' $LOG_PATH
   rm "$LOG_DIR"'/tmp'
+  if [ "$PASS" == 'yes' ]
+  then
+     # Run 'uploadtg.sh' if all requirements are met
+     if [ "$2" != '' ] && [ "$3" == '' ]
+     then
+      if [ $SIGN -eq 0 ]
+      then
+       TARGETPATH="$WORKING_DIR"'/out/target/product/'"$BREAKFAST_DEVICE"
+       TARGETZIP=$(ls -1 "$TARGETPATH"'/*.zip' | tail -1)
+      fi
+      bash ~/uploadtg.sh "$WORKING_DIR"'/'"$TARGETZIP" "$2" '' '' "$4"
+     else
+      if [ "$2" != '' ] && [ "$3" != '' ]
+      then
+       AUTHOR_USERNAME=$(echo "$3" | cut -d '<' -f 1)
+       AUTHOR_EMAIL=$(echo "$3" | cut -d '<' -f 2 | cut -d '>' -f 1)
+       if [ $SIGN -eq 0 ]
+       then
+        TARGETPATH="$WORKING_DIR"'/out/target/product/'"$BREAKFAST_DEVICE"
+        TARGETZIP=$(ls -1 "$TARGETPATH"'/*.zip' | tail -1)
+       fi
+       bash ~/uploadtg.sh "$WORKING_DIR"'/'"$TARGETZIP" "$2" "$AUTHOR_USERNAME" "$AUTHOR_EMAIL" "$4"
+      fi
+     fi
+  fi
  fi
 fi
