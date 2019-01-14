@@ -171,6 +171,7 @@ OUTPUT="$OUTPUT""$TESTERS"
 if [ ! -z $LOG_PATH ]
 then
  OUTPUT="$OUTPUT""
+
 $LOG_EMOJI"' ''The maintainer attached a build log to this release.'
 fi
 OUTPUT="$OUTPUT""
