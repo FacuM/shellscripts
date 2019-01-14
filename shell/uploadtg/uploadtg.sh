@@ -166,7 +166,8 @@ SHA256=$(sha256sum $1 | cut -d ' ' -f 1)
 OUTPUT="$OUTPUT""
 $SHA256_EMOJI"' ''**SHA256:** `'"$SHA256"'`'
 OUTPUT="$OUTPUT""
-$NOTE_EMOJI"' ''**NOTE:** '"$NOTE"""
+$NOTE_EMOJI"' ''**NOTE:** '"
+$NOTE"""
 OUTPUT="$OUTPUT""$TESTERS"
 if [ ! -z $LOG_PATH ]
 then
@@ -178,7 +179,7 @@ OUTPUT="$OUTPUT""
 $(drawSeparator '9')"
 curl "https://api.telegram.org/bot""$api_key""/sendMessage" -d "{ \"chat_id\":\"$chat_id\", \"text\":\"$OUTPUT\", \"parse_mode\":\"markdown\"}" -H "Content-Type: application/json" -s > /dev/null
 STATUS=$?
-echo 'FILE: '$NAME'('"$DOWNLOAD"')'
+echo 'FILE: '$NAME' ''('"$DOWNLOAD"')'
 echo 'MAINTAINER: '$MAINTAINER
 echo 'MD5: '$MD5
 echo 'SHA256SUM: '$SHA256
