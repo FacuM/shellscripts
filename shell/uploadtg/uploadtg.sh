@@ -184,7 +184,7 @@ echo 'MD5: '$MD5
 echo 'SHA256SUM: '$SHA256
 if [ "$TESTERS" != '' ]
 then
- echo 'TESTERS: '$TESTERS
+ echo 'TESTERS: '$5
 fi
 printf 'STATUS: '
 if [ $STATUS -eq 0 ]
