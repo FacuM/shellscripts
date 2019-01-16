@@ -64,6 +64,7 @@ I  Will not log anything.         I
 
  # Prepare the working directory.
  echo '=> Preparing...' | tee -a $LOG_PATH
+
  if [ "$1" == 'reset' ]
  then
   echo '
@@ -191,25 +192,22 @@ I    Failed to initialize repo    I
   if [ "$PASS" == 'yes' ]
   then
      # Run 'uploadtg.sh' if all requirements are met
+     if [ $SIGN -eq 0 ]
+     then
+      TARGETPATH="$WORKING_DIR"'/out/target/product/'"$BREAKFAST_DEVICE"
+     else
+      TARGETPATH="$WORKING_DIR"
+     fi
+     TARGETPATH=$(ls -tr1 "$TARGETPATH"'/'*'.zip' | tail -1)
      if [ "$2" != '' ] && [ "$3" == '' ]
      then
-      if [ $SIGN -eq 0 ]
-      then
-       TARGETPATH="$WORKING_DIR"'/out/target/product/'"$BREAKFAST_DEVICE"
-       TARGETZIP=$(ls -1 "$TARGETPATH"'/*.zip' | tail -1)
-      fi
-      bash ~/uploadtg.sh "$WORKING_DIR"'/'"$TARGETZIP" "$2" '' '' "$4"
+      bash ~/uploadtg.sh "$TARGETPATH" "$2" '' '' "$4"
      else
       if [ "$2" != '' ] && [ "$3" != '' ]
       then
        AUTHOR_USERNAME=$(echo "$3" | cut -d '<' -f 1)
        AUTHOR_EMAIL=$(echo "$3" | cut -d '<' -f 2 | cut -d '>' -f 1)
-       if [ $SIGN -eq 0 ]
-       then
-        TARGETPATH="$WORKING_DIR"'/out/target/product/'"$BREAKFAST_DEVICE"
-        TARGETZIP=$(ls -1 "$TARGETPATH"'/*.zip' | tail -1)
-       fi
-       bash ~/uploadtg.sh "$WORKING_DIR"'/'"$TARGETZIP" "$2" "$AUTHOR_USERNAME" "$AUTHOR_EMAIL" "$4"
+       bash ~/uploadtg.sh "$TARGETPATH" "$2" "$AUTHOR_USERNAME" "$AUTHOR_EMAIL" "$4"
       fi
      fi
   fi
