@@ -31,6 +31,8 @@ else
 ====================================="
   lunch $2 > tmp
  fi
+ # Cleanup before trying to localize it
+ unset TARGETZIP
  TARGETZIP=$(cat tmp | sed 's/PLATFORM_VERSION//')
  rm tmp
  echo "$TARGETZIP" | grep lineage > /dev/null
