@@ -197,12 +197,12 @@ fi
 printf '\n'
 if [ -f $1 ]
 then
- echo 'FILE: '"$1"'.md5sum'
+ echo 'CHECKSUM: '"$1"'.md5sum'
  curl "https://api.telegram.org/bot""$api_key""/sendDocument" -F chat_id="$chat_id" -F document=@"$1"".md5sum" -H 'Content-Type: multipart/form-data' -s > /dev/null
 fi
 if [ ! -z $LOG_PATH ]
 then
- echo 'LOG: '"$6"'.md5sum'
+ echo 'LOG: '"$LOG_PATH"'.md5sum'
  curl "https://api.telegram.org/bot""$api_key""/sendDocument" -F chat_id="$chat_id" -F document=@"$LOG_PATH" -H 'Content-Type: multipart/form-data' -s > /dev/null
 fi
 exit 0
