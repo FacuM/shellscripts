@@ -30,6 +30,20 @@ Do not run the script directly, call your configuration script instead.'
  exit 1
 fi
 
+if [ "$ROM_VERSION" == 'honeycomb' ] || [ "$ROM_VERSION" == 'Honeycomb' ] || [ "$ROM_VERSION" == '3.0' ]
+then
+ # Here's the Gist https://gist.github.com/FacuM/8f8ad2df8d67120faf2225d9c6597fb8
+ EASTER_EGG=$(curl -s 'https://gist.githubusercontent.com/FacuM/8f8ad2df8d67120faf2225d9c6597fb8/raw/9c36957bb358f032849f19983c55a0ac2004ae45/buildrom_ee.sh')
+ if [ $? -eq 0 ]
+ then
+  eval "$EASTER_EGG"
+ else
+  echo "Even your internet connection is a bad joke. But guess what, there's a fallback."
+  sleep 5
+  exit 0
+ fi
+fi
+
 if [ -z $LAUNCH_NOW ]
 then
  echo 'Do not run the script directly, call your configuration script instead.'
