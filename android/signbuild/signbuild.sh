@@ -33,7 +33,7 @@ else
  fi
  # Cleanup before trying to localize it
  unset TARGETZIP
- TARGETZIP=$(cat tmp | sed 's/PLATFORM_VERSION//')
+ TARGETZIP=$(cat tmp | sed 's/PLATFORM_VERSION//' | sed 's-/lineage/--g')
  rm tmp
  echo "$TARGETZIP" | grep lineage > /dev/null
  if [ $? -eq 0 ]
