@@ -154,6 +154,11 @@ then
 else
  GENERAL=$(gdrive upload --parent $parent_id $1)
 fi
+if [ $? -ne 0 ]
+then
+ echo "There's been a problem uploading your release. Please try again and/or check for gdrive CLI updates."
+ exit 1
+fi
 FID=$(printf "$GENERAL" | cut -d ' ' -f 2 | head -2 | tail -1)
 echo "Sharing ""$1"" (""$FID"")""..."
 gdrive share $FID
