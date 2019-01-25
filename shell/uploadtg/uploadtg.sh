@@ -148,7 +148,13 @@ fi
 
 # Upload file and post in Telegram
 echo "Uploading ""$1""..."
-FID=$(gdrive upload $1 | cut -d ' ' -f 2 | head -2 | tail -1)
+if [ -z $parent_id ]
+then
+ GENERAL=$(gdrive upload $1)
+else
+ GENERAL=$(gdrive upload --parent $parent_id $1)
+fi
+FID=$(printf "$GENERAL" | cut -d ' ' -f 2 | head -2 | tail -1)
 echo "Sharing ""$1"" (""$FID"")""..."
 gdrive share $FID
 INFO=$(gdrive info $FID)
