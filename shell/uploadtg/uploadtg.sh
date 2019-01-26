@@ -73,6 +73,25 @@ function drawSeparator
  echo "$OUT"
 }
 
+
+# wait_for_api: prevent exceding rate limit of GDrive API if defined (in seconds).
+function wait_for_api()
+{
+ if [ ! -z $call_interval ]
+ then
+  printf '\n'
+  cur=$call_interval
+  while [ $cur -gt -1 ]
+  do
+   printf '\rWaiting '"$cur"' seconds for the next API call.'
+   cur=$(( $cur - 1 ))
+   sleep 1
+  done
+  printf '\n'
+ fi
+}
+
+
 # Main
 
 # Check if a file's been provided.
@@ -148,12 +167,14 @@ fi
 
 # Upload file and post in Telegram
 echo "Uploading ""$1""..."
+wait_for_api
 if [ -z $parent_id ]
 then
  GENERAL=$(gdrive upload $1)
 else
  GENERAL=$(gdrive upload --parent $parent_id $1)
 fi
+wait_for_api
 if [ $? -ne 0 ]
 then
  echo "There's been a problem uploading your release. Please try again and/or check for gdrive CLI updates."
