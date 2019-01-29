@@ -69,6 +69,9 @@ Forcing this behavior in ~/.bashrc.
 => Setting up $PATH to include '"$BIN_PATH"'.'
      echo '
 PATH='"$BIN_PATH"':$PATH' >> ~/.bashrc
+     echo '=> Reloading Bash configuration please wait...'
+     . ~/.bashrc
+     echo '=> Done reloading Bash configuration.'
     fi
     echo '=> All done, you can now build your ROM!'
    else
