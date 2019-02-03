@@ -9,7 +9,7 @@
 
 # TODO: Rework this, this should be read from the ROM source or
 #       other known working private types.
-PRIVATE_TYPES=('adbtcp_prop' 'storaged' 'hal_allocator' 'sysinit')
+PRIVATE_TYPES=('adbtcp_prop' 'storaged' 'hal_allocator' 'sysinit' 'ctl_mdnd_prop')
 
 if [ -z $1 ]
 then
