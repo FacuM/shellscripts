@@ -52,7 +52,7 @@ do
    printf '\n'"$TYPE"': '"$line"
    if [ -f "$OUTDIR"'/'"$OUT"'.te' ]
    then
-    MATCH=$(grep -n "$line" "$OUTDIR"'/'"$OUT"'.te' | cut -d: -f1)
+    MATCH=$(grep -n "$line" "$OUTDIR"'/'"$OUT"'.te')
     if [ $? -eq 0 ]
     then
      printf ' - Found matching line, skipped.'
