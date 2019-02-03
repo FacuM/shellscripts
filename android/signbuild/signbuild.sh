@@ -70,6 +70,7 @@ else
    echo '==> Success! <=='
   else
    echo '==> Failed to sign your build. Please check the errors above.'
+   touch .build_failed
   fi
  fi
 fi

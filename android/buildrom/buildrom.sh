@@ -144,7 +144,7 @@ I       Publicly signed build.    I
      . build/envsetup.sh 2>&1 | tee -a $LOG_PATH
      brunch "$ROM_LUNCH"_"$BREAKFAST_DEVICE"-userdebug 2>&1 | tee -a $LOG_PATH
     fi
-    if [ $? -eq 0 ] && [ "$SIGNSTAT" != 'err' ]
+    if [ $? -eq 0 ] && [ ! -f "$WORKING_DIR"'/.build_failed' ]
     then
      echo '
 ===================================
@@ -153,11 +153,6 @@ I                                 I
 I     Compilation completed!      I
 ===================================' | tee -a $LOG_PATH
      export PASS='yes'
-     # Run "$ON_SUCCESS"
-     if [ "$ON_SUCCESS" != '' ]
-     then
-      $ON_SUCCESS
-     fi
     else
      echo '
 ===================================
@@ -165,6 +160,7 @@ I              ERROR              I
 I                                 I
 I       Compilation failed.       I
 ===================================' | tee -a $LOG_PATH
+     rm -f "$WORKING_DIR"'/.build_failed'
     fi
    else
     if [ "$1" == 'js' ]
@@ -225,5 +221,10 @@ I    Failed to initialize repo    I
       fi
      fi
   fi
+ fi
+ # Run "$ON_SUCCESS"
+ if [ "$ON_SUCCESS" != '' ]
+ then
+  $ON_SUCCESS
  fi
 fi
