@@ -7,6 +7,10 @@
 #
 ########################################
 
+# TODO: Rework this, this should be read from the ROM source or
+#       other known working private types.
+PRIVATE_TYPES=('adbtcp_prop' 'storaged' 'hal_allocator' 'sysinit')
+
 if [ -z $1 ]
 then
  printf "\nInvalid input.\n\nUsage: bash $0 path/to/audit2allowoutput\n"
@@ -22,16 +26,41 @@ unset OUT
 echo "- Patching sepolicies from \"$1\"..."
 while read -r line
 do
- printf "$line" | grep '#=============' 2>&1 > /dev/null
- if [ $? == 0 ]
+ if printf "$line" | grep '#=============' 2> /dev/null > /dev/null
  then
   OUT=$(printf "$line" | sed 's/#============= //' | sed 's/ ==============//')
-  echo "> Patching file '"$OUT".te'..."
+  printf "\n> Patching file '"$OUT".te'..."
  else
   if [ ! -z $OUT ]
   then
-   echo "$line"
-   echo "$line" >> "sepolicy/$OUT"".te"
+   for private_type in $PRIVATE_TYPES
+   do
+    if printf "$line" | grep "$private_type" 2> /dev/null > /dev/null
+    then
+     TYPE='PRIVATE'
+     break
+    else
+     TYPE='PUBLIC'
+    fi
+   done
+   if [ "$TYPE" == 'PRIVATE' ]
+   then
+    OUTDIR='sepolicy_private'
+   else
+    OUTDIR='sepolicy'
+   fi
+   printf '\n'"$TYPE"': '"$line"
+   if [ -f "$OUTDIR"'/'"$OUT"'.te' ]
+   then
+    MATCH=$(grep -n "$line" "$OUTDIR"'/'"$OUT"'.te' | cut -d: -f1)
+    if [ $? -eq 0 ]
+    then
+     printf ' - Found matching line, skipped.'
+    else
+     printf ' - Added.'
+     echo "$line" >> "$OUTDIR"'/'"$OUT"'.te'
+    fi
+   fi
   fi
  fi
 done < $1
