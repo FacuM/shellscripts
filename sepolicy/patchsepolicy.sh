@@ -9,7 +9,7 @@
 
 # TODO: Rework this, this should be read from the ROM source or
 #       other known working private types.
-PRIVATE_TYPES=('adbtcp_prop' 'storaged' 'hal_allocator' 'sysinit' 'ctl_mdnd_prop')
+PRIVATE_TYPES=('adbtcp_prop' 'storaged' 'hal_allocator' 'sysinit' 'ctl_mdnd_prop' 'statsd' 'lineage_recovery_prop' 'magisk_file')
 
 if [ -z $1 ]
 then
@@ -33,35 +33,41 @@ do
  else
   if [ ! -z $OUT ]
   then
-   for private_type in $PRIVATE_TYPES
-   do
-    if printf "$line" | grep "$private_type" 2> /dev/null > /dev/null
+   if [ $(printf "$line" | wc -w) -gt 1 ]
+   then
+    for private_type in "${PRIVATE_TYPES[@]}"
+    do
+     if printf "$line" | grep "$private_type" 2> /dev/null > /dev/null
+     then
+      TYPE='PRIVATE'
+      break
+     else
+      TYPE='PUBLIC'
+     fi
+    done
+    if [ "$TYPE" == 'PRIVATE' ]
     then
-     TYPE='PRIVATE'
-     break
+     OUTDIR='sepolicy_private'
     else
-     TYPE='PUBLIC'
+     OUTDIR='sepolicy'
     fi
-   done
-   if [ "$TYPE" == 'PRIVATE' ]
-   then
-    OUTDIR='sepolicy_private'
-   else
-    OUTDIR='sepolicy'
-   fi
-   printf '\n'"$TYPE"': '"$line"
-   if [ -f "$OUTDIR"'/'"$OUT"'.te' ]
-   then
-    MATCH=$(grep -n "$line" "$OUTDIR"'/'"$OUT"'.te')
-    if [ $? -eq 0 ]
+    printf '\n'"$TYPE"': '"$line"
+    if [ -f "$OUTDIR"'/'"$OUT"'.te' ]
     then
-     printf ' - Found matching line, skipped.'
+     MATCH=$(grep -n "$line" "$OUTDIR"'/'"$OUT"'.te')
+     if [ $? -eq 0 ]
+     then
+      printf ' - Found matching line, skipped.'
+     else
+      printf ' - Added.'
+      echo "$line" >> "$OUTDIR"'/'"$OUT"'.te'
+     fi
     else
-     printf ' - Added.'
-     echo "$line" >> "$OUTDIR"'/'"$OUT"'.te'
+      printf ' - Added.'
+      echo "$line" >> "$OUTDIR"'/'"$OUT"'.te'
     fi
    fi
   fi
  fi
 done < $1
-echo "- Patch completed."
+printf '\n- Patch completed.\n'
