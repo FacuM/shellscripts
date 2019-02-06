@@ -88,6 +88,7 @@ I                                 I
 I        Removing old source.     I
 ===================================' | tee -a $LOG_PATH
   rm -Rf "$WORKING_DIR"
+  mkdir "$WORKING_DIR"
  fi
  if [ -d "$WORKING_DIR" ]
  then
