@@ -58,22 +58,29 @@ else
  fi
 
  # Check if $LOG_PATH is writable
- mkdir -p "$WORKING_DIR"
- touch "$LOG_PATH"'/.test'
- if [ $? -ne 0 ]
+ if [ "$1" == 'js' ]
  then
-  echo '
+  # TODO: Rework this so that the logging gets
+  #       really disabled if this code is ran.
+  export LOG_PATH='/dev/null'
+ else
+  mkdir -p "$WORKING_DIR"
+  touch "$LOG_PATH"'/.test'
+  if [ $? -ne 0 ]
+  then
+   echo '
 ===================================
 I             WARNING             I
 I                                 I
 I  Log path not writable.         I
 I  Will not log anything.         I
 ==================================='
-  export LOG_PATH='/dev/null'
- else
-  rm "$LOG_PATH"'/.test'
-  export LOG_PATH="$LOG_PATH"'/'"$LOG_FILENAME"
-  echo '=> Enabled logging!' | tee -a $LOG_PATH
+   export LOG_PATH='/dev/null'
+  else
+   rm "$LOG_PATH"'/.test'
+   export LOG_PATH="$LOG_PATH"'/'"$LOG_FILENAME"
+   echo '=> Enabled logging!' | tee -a $LOG_PATH
+  fi
  fi
 
  # Prepare the working directory.
@@ -192,7 +199,7 @@ I    Failed to initialize repo    I
  fi
 
  # Handle logger privacy
- if [ "$USERNAME" != 'auto' ]
+ if [ "$USERNAME" != 'auto' ] && [ "$1" != 'js' ]
  then
   echo '=> Hiding logged username...' | tee -a $LOG_PATH
   cat $LOG_PATH | sed 's/'"$USER"'/'"$USERNAME"'/g' > "$LOG_DIR"'/tmp'
