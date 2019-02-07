@@ -4,7 +4,7 @@ otagen
 Usage
 -----
 
-This is script is meant to be paired as a companion of "buildrom". The easiest way to pair it is to just download ir right into your home path and set it to run "ON_SUCCESS", like this:
+This script is meant to be paired as a companion of "buildrom". The easiest way to pair it is to just download ir right into your home path and set it to run "ON_SUCCESS", like this:
 
 	ON_SUCCESS='. ~/otagen.sh'
 
