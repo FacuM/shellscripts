@@ -233,6 +233,6 @@ I    Failed to initialize repo    I
  # Run "$ON_SUCCESS"
  if [ "$ON_SUCCESS" != '' ]
  then
-  $ON_SUCCESS
+  eval $ON_SUCCESS
  fi
 fi
