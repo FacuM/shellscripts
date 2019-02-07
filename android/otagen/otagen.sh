@@ -30,7 +30,7 @@ Do not run the script directly, call your configuration script instead.'
  exit 1
 fi
 
-# This script is sintented to be ran from buildrom, or from a
+# This script is intented to be run from buildrom, or from a
 # bunch of lines setting it up before. Seriously, don't set it
 # up by hand, please.
 
