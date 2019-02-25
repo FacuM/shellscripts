@@ -12,7 +12,8 @@
 
 CCACHE_SIZE='100G'
 DEBIAN_BUILD_DEPENDENCIES='bc bison build-essential ccache curl flex g++-multilib gcc-multilib git gnupg gperf imagemagick lib32ncurses5-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5-dev libsdl1.2-dev libssl-dev libwxgtk3.0-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev screen screenie tmux unzip libisl15'
-ARCH_BUILD_DEPENDENCIES='bc bison curl libisl15 unzip zip tmux screen screenie lib32-gcc-libs git gnupg flex gperf sdl wxgtk2 squashfs-tools ncurses zlib schedtool perl-switch libxslt python2-virtualenv rsync ncurses5-compat-libs lib32-zlib lib32-ncurses lib32-readline lib32-ncurses5-compat-libs'
+ARCH_BUILD_DEPENDENCIES='bc bison curl unzip zip tmux screen lib32-gcc-libs git gnupg flex gperf sdl wxgtk2 squashfs-tools ncurses zlib schedtool perl-switch libxslt python2-virtualenv rsync ncurses5-compat-libs lib32-zlib lib32-ncurses lib32-readline lib32-ncurses5-compat-libs'
+ARCH_BUILD_DEPENDENCIES_NOROOT='isl'
 BIN_PATH="$HOME"'/bin'
 # This script must be run from the source shell, if not, crash.
 if [ "${BASH_SOURCE[0]}" == "${0}" ]
@@ -29,6 +30,24 @@ fi
 OS_RELEASE="$(cat /etc/*-release)"
 if echo "$OS_RELEASE" | grep "Arch" > /dev/null
 then
+ # Enable multilib
+ echo '--- pacman.conf 2019-02-25 11:37:33.365488333 +0000
++++ /etc/pacman.conf    2019-01-07 18:36:11.309331112 +0000
+@@ -90,8 +90,8 @@
+ #[multilib-testing]
+ #Include = /etc/pacman.d/mirrorlist
+
+-#[multilib]
+-#Include = /etc/pacman.d/mirrorlist
++[multilib]
++Include = /etc/pacman.d/mirrorlist
+
+ # An example of a custom package repository.  See the pacman manpage for
+ # tips on creating your own repositories.' > patch
+ CUR=$PWD
+ cd /etc
+ sudo patch --dry-run -s -f < $CUR'/patch'
+ cd $CUR
  PM_CMD='pacman -Syu --noconfirm'
  sudo $PM_CMD base-devel
  rm -rf yay
@@ -38,6 +57,7 @@ then
  cd ../
  PM_CMD='yay -Syu --noconfirm'
  BUILD_DEPENDENCIES=$ARCH_BUILD_DEPENDENCIES
+ $PM_CMD isl
 else
  PM_CMD='apt-get'
  sudo $PM_CMD update
