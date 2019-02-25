@@ -51,33 +51,15 @@ ROM_LUNCH: '"$ROM_LUNCH"'
 ERROR: Cannot proceed, one or more required values are missing.'
 else
  echo 'Running OTA generation commands...'
- # This will be the build time (BuildTime XML tag).
- BUILD_TIME=$(date '+%s')
  # Logic from https://github.com/artur9010/pdup
  ROM_URL=$(curl -# -F 'fileName='"$TARGETPATH" -F 'file=@'"$TARGETPATH" 'https://sia.pixeldrain.com/api/file' | cut -d '"' -f 4)
  MD5_URL=$(curl -# -F 'fileName='"$TARGETPATH"'.md5sum' -F 'file=@'"$TARGETPATH"'.md5sum' 'https://sia.pixeldrain.com/api/file' | cut -d '"' -f 4)
- OTA_XML='
-<?xml version="1.0" encoding="UTF-8"?>
-<Updates>
-    <Pie>
-        <'"$BREAKFAST_DEVICE"'>
-            <Filename>'"$TARGETPATH"'</Filename>
-            <BuildTime>'"$BUILD_TIME"'</BuildTime>
-            <RomUrl>https://sia.pixeldrain.com/api/file/'"$ROM_URL"'</RomUrl>
-            <MD5Url>https://sia.pixeldrain.com/api/file/'"$MD5_URL"'</MD5Url>
-            <ChangelogUrl>https://raw.githubusercontent.com/cosp-project/OTAconfig/pie/changelog/changelog-'"$BREAKFAST_DEVICE"'.txt</ChangelogUrl>
-        </'"$BREAKFAST_DEVICE"'>
-    </Pie>
-</Updates>'
- echo "This is how your XML file will look like:
-$OTA_XML"
  OTA_TARGET_PATH='out/target/product/'"$BREAKFAST_DEVICE"
- OTA_XML_PATH="$OTA_TARGET_PATH"'/ota_'"$BREAKFAST_DEVICE"'_official.xml'
- printf "$OTA_XML" > $OTA_XML_PATH
- #. vendor/"$ROM_LUNCH"/tools/changelog.sh
+ . vendor/"$ROM_LUNCH"/tools/changelog.sh
  CHANGELOG_PATH="$OTA_TARGET_PATH"'/Changelog.txt'
  echo 'All done! You are ready to post your OTA updates.
 
-OTA XML Path: '"$OTA_XML_PATH"'
+ROM URL: '"$ROM_URL"'
+MD5 URL: '"$MD5_URL"'
 Changelog path: '"$CHANGELOG_PATH"
 fi
