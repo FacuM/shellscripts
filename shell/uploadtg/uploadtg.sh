@@ -7,7 +7,7 @@
 #
 ########################################
 #
-# Depends on: gdrive.
+# Depends on: no dependencies.
 #
 ########################################
 
@@ -74,7 +74,7 @@ function drawSeparator
 }
 
 
-# wait_for_api: prevent exceding rate limit of GDrive API if defined (in seconds).
+# wait_for_api: prevent exceding rate limit of the API if defined (in seconds).
 function wait_for_api()
 {
  if [ ! -z $call_interval ]
@@ -155,10 +155,6 @@ then
 $TESTERS_EMOJI"' ''The maintainer is calling to '"$5"' to test this release!'
 fi
 
-# Check dependencies
-gdrive > /dev/null 2> /dev/null
-testinst $?
-
 # Set log if path given
 if [ -z $LOG_PATH ] && [ "$6" != '' ]
 then
@@ -167,31 +163,20 @@ fi
 
 # Upload file and post in Telegram
 echo "Uploading ""$1""..."
-wait_for_api
-if [ -z $parent_id ]
-then
- GENERAL=$(gdrive upload $1)
-else
- GENERAL=$(gdrive upload --parent $parent_id $1)
-fi
-wait_for_api
+DOWNLOAD=$(curl -s --upload-file "$1" "https://transfer.sh")
 if [ $? -ne 0 ]
 then
- echo "There's been a problem uploading your release. Please try again and/or check for gdrive CLI updates."
+ echo "There's been a problem uploading your release. Please try again and/or check for API updates."
  exit 1
 fi
-FID=$(printf "$GENERAL" | cut -d ' ' -f 2 | head -2 | tail -1)
-echo "Sharing ""$1"" (""$FID"")""..."
-gdrive share $FID
-INFO=$(gdrive info $FID)
 OUTPUT="$(drawSeparator '9')"
-DOWNLOAD=$(printf "$INFO" | grep 'DownloadUrl' | cut -d ' ' -f 2)
-NAME=$(printf "$INFO" | grep 'Name' | cut -d ' ' -f 2)
+COUNT=$(printf "$1" | awk -F \/ '{print NF}')
+NAME=$(printf "$1" | cut -d \/ -f $COUNT)
 OUTPUT="$OUTPUT""
 $FILE_EMOJI"' '"**FILE:** [""$NAME""](""$DOWNLOAD"")"
 OUTPUT="$OUTPUT""
 $MAINTAINER_EMOJI"' ''**MAINTAINER: '"$MAINTAINER"
-MD5=$(printf "$INFO" | grep 'Md5sum' | cut -d ' ' -f 2)
+MD5=$(cat "$1"'.md5sum' | cut -d ' ' -f 1)
 OUTPUT="$OUTPUT""
 $MD5_EMOJI"' ''**MD5:** `'"$MD5"'`'
 SHA256=$(sha256sum $1 | cut -d ' ' -f 1)
