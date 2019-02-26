@@ -55,6 +55,7 @@ then
  then
   echo 'Success downloading an updated list of mirrors.'
   sudo cp -f ./mirrorlist_new /etc/pacman.d/mirrorlist
+  rm ./mirrorlist_new
  else
   echo 'WARNING: Unable to update the list of mirrors. This might cause unexpected behavior.'
  fi
