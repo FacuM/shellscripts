@@ -12,7 +12,7 @@
 
 CCACHE_SIZE='100G'
 DEBIAN_BUILD_DEPENDENCIES='bc bison build-essential ccache curl flex g++-multilib gcc-multilib git gnupg gperf imagemagick lib32ncurses5-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5-dev libsdl1.2-dev libssl-dev libwxgtk3.0-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev screen screenie tmux unzip libisl15'
-ARCH_BUILD_DEPENDENCIES='bc bison curl unzip zip tmux screen lib32-gcc-libs git gnupg flex gperf sdl wxgtk2 squashfs-tools ncurses zlib schedtool perl-switch libxslt python2-virtualenv rsync ncurses5-compat-libs lib32-zlib lib32-ncurses lib32-readline lib32-ncurses5-compat-libs'
+ARCH_BUILD_DEPENDENCIES='bc bison curl unzip zip tmux screen lib32-gcc-libs git gnupg flex gperf sdl wxgtk2 squashfs-tools lineageos-devel'
 ARCH_BUILD_DEPENDENCIES_NOROOT='isl'
 BIN_PATH="$HOME"'/bin'
 # This script must be run from the source shell, if not, crash.
@@ -30,7 +30,23 @@ fi
 OS_RELEASE="$(cat /etc/*-release)"
 if echo "$OS_RELEASE" | grep "Arch" > /dev/null
 then
+ # Fetching an updated list of mirrors
+ cp -f /etc/pacman.d/mirrorlist ./mirrorlist
+ echo 'Backed up /etc/pacman.d/mirrorlist to ./mirrorlist. Fetching from country "all".'
+ if curl -s 'https://www.archlinux.org/mirrorlist/?country=all&protocol=http&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on' > ./mirrorlist_new 2> /dev/null
+ then
+  echo 'Success downloading an updated list of mirrors.'
+  cat ./mirrorlist_new | sed 's/#Server =/Server =/g' > ./mirrorlist_new_enabled
+  rm -f ./mirrorlist_new
+  sudo cp -f ./mirrorlist_new_enabled /etc/pacman.d/mirrorlist
+  rm -f ./mirorlist_new_enabled
+ else
+  echo 'WARNING: Unable to update the list of mirrors. This might cause unexpected behavior.'
+ fi
+ PM_CMD='sudo pacman -Syu --noconfirm'
+ $PM_CMD base-devel
  # Enable multilib
+ echo 'Enabling multilib support...'
  echo '--- pacman.conf 2019-02-25 11:37:33.365488333 +0000
 +++ /etc/pacman.conf    2019-01-07 18:36:11.309331112 +0000
 @@ -90,8 +90,8 @@
@@ -46,21 +62,8 @@ then
  # tips on creating your own repositories.' > patch
  CUR=$PWD
  cd /etc
- sudo patch --dry-run -s -f < $CUR'/patch'
+ sudo patch -f < $CUR'/patch'
  cd $CUR
- # Fetching an updated list of mirrors
- cp -f /etc/pacman.d/mirrorlist ./mirrorlist
- echo 'Backed up /etc/pacman.d/mirrorlist to ./mirrorlist. Fetching from country "all".'
- if curl -s 'https://www.archlinux.org/mirrorlist/?country=all&protocol=http&protocol=https&ip_version=4' > ./mirrorlist_new 2> /dev/null
- then
-  echo 'Success downloading an updated list of mirrors.'
-  sudo cp -f ./mirrorlist_new /etc/pacman.d/mirrorlist
-  rm ./mirrorlist_new
- else
-  echo 'WARNING: Unable to update the list of mirrors. This might cause unexpected behavior.'
- fi
- PM_CMD='pacman -Syu --noconfirm'
- sudo $PM_CMD base-devel
  rm -rf yay
  git clone https://aur.archlinux.org/yay.git
  cd yay
@@ -70,15 +73,15 @@ then
  BUILD_DEPENDENCIES=$ARCH_BUILD_DEPENDENCIES
  $PM_CMD isl
 else
- PM_CMD='apt-get'
- sudo $PM_CMD update
+ PM_CMD='sudo apt-get'
+ $PM_CMD update
  PM_CMD="$PM_CMD"' -y install'
  BUILD_DEPENDENCIES=$DEBIAN_BUILD_DEPENDENCIES
 fi
 if [ $? -eq 0 ]
 then
  echo '=> Installing dependencies...'
- sudo $PM_CMD $BUILD_DEPENDENCIES
+ $PM_CMD $BUILD_DEPENDENCIES
  if [ $? -eq 0 ]
  then
   echo '=> Setting up your profile...'
@@ -127,6 +130,6 @@ PATH='"$BIN_PATH"':$PATH' >> ~/.bashrc
    echo '=> Failed to set up your profile. Please try again.'
   fi
  else
-  echo '=> Failed to write build settings to "~/.bashrc".'
+  echo '=> Failed to fetch the required packages.'
  fi
 fi
