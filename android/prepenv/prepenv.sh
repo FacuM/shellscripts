@@ -12,8 +12,7 @@
 
 CCACHE_SIZE='100G'
 DEBIAN_BUILD_DEPENDENCIES='bc bison build-essential ccache curl flex g++-multilib gcc-multilib git gnupg gperf imagemagick lib32ncurses5-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5-dev libsdl1.2-dev libssl-dev libwxgtk3.0-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev screen screenie tmux unzip libisl15 git-lfs'
-ARCH_BUILD_DEPENDENCIES='bc bison curl unzip zip tmux screen lib32-gcc-libs git gnupg flex gperf sdl wxgtk2 squashfs-tools lineageos-devel git-lfs'
-ARCH_BUILD_DEPENDENCIES_NOROOT='isl15'
+ARCH_BUILD_DEPENDENCIES='bc bison curl unzip zip tmux screen lib32-gcc-libs git gnupg flex gperf sdl wxgtk2 squashfs-tools lineageos-devel git-lfs isl15'
 BIN_PATH="$HOME"'/bin'
 # This script must be run from the source shell, if not, crash.
 if [ "${BASH_SOURCE[0]}" == "${0}" ]
@@ -76,7 +75,6 @@ then
  cd ../
  PM_CMD='yay -Syu --noconfirm'
  BUILD_DEPENDENCIES=$ARCH_BUILD_DEPENDENCIES
- $PM_CMD isl
 else
  PM_CMD='sudo apt-get'
  $PM_CMD update
