@@ -65,6 +65,9 @@ then
  sudo patch -f < $CUR'/patch'
  # Delete patch rejections (if any)
  sudo rm -f pacman.conf.rej
+ cd $HOME
+ # Install Git LFS
+ git lfs install
  cd $CUR
  rm -rf yay
  git clone https://aur.archlinux.org/yay.git
