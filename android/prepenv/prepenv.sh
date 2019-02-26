@@ -28,6 +28,8 @@ fi
 
 CUR=$PWD
 OS_RELEASE="$(cat /etc/*-release)"
+# Make sure $BIN_PATH exists.
+mkdir -p $BIN_PATH
 if echo "$OS_RELEASE" | grep "Arch" > /dev/null
 then
  # Fetching an updated list of mirrors
@@ -104,8 +106,6 @@ ccache -M '"$CCACHE_SIZE"'
   if [ $? -eq 0 ]
   then
    echo '=> Installing and setting up repo...'
-   # Make sure $BIN_PATH exists.
-   mkdir -p $BIN_PATH
    curl -s https://storage.googleapis.com/git-repo-downloads/repo > "$BIN_PATH"'/repo'
    if [ $? -eq 0 ]
    then
