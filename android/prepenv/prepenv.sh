@@ -75,6 +75,9 @@ then
  cd ../
  PM_CMD='yay -Syu --noconfirm'
  BUILD_DEPENDENCIES=$ARCH_BUILD_DEPENDENCIES
+ # Make links for "repo"
+ ln -s /usr/bin/python2 ~/bin/python
+ ln -s /usr/bin/python2-config ~/bin/python-config
 else
  PM_CMD='sudo apt-get'
  $PM_CMD update
