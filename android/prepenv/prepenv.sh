@@ -48,6 +48,16 @@ then
  cd /etc
  sudo patch --dry-run -s -f < $CUR'/patch'
  cd $CUR
+ # Fetching an updated list of mirrors
+ cp -f /etc/pacman.d/mirrorlist ./mirrorlist
+ echo 'Backed up /etc/pacman.d/mirrorlist to ./mirrorlist. Fetching from country "all".'
+ if curl -s 'https://www.archlinux.org/mirrorlist/?country=all&protocol=http&protocol=https&ip_version=4' > ./mirrorlist_new 2> /dev/null
+ then
+  echo 'Success downloading an updated list of mirrors.'
+  sudo cp -f ./mirrorlist_new /etc/pacman.d/mirrorlist
+ else
+  echo 'WARNING: Unable to update the list of mirrors. This might cause unexpected behavior.'
+ fi
  PM_CMD='pacman -Syu --noconfirm'
  sudo $PM_CMD base-devel
  rm -rf yay
@@ -64,8 +74,6 @@ else
  PM_CMD="$PM_CMD"' -y install'
  BUILD_DEPENDENCIES=$DEBIAN_BUILD_DEPENDENCIES
 fi
-echo 'Please allow me to run as root.'
-sudo echo "--> We are now rooted!" || echo '--> Failed to acquire root permission, quitting.'
 if [ $? -eq 0 ]
 then
  echo '=> Installing dependencies...'
