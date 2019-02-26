@@ -26,6 +26,7 @@ Usage:
  exit 1
 fi
 
+CUR=$PWD
 OS_RELEASE="$(cat /etc/*-release)"
 if echo "$OS_RELEASE" | grep "Arch" > /dev/null
 then
@@ -59,7 +60,6 @@ then
 
  # An example of a custom package repository.  See the pacman manpage for
  # tips on creating your own repositories.' > patch
- CUR=$PWD
  cd /etc
  sudo patch -f < $CUR'/patch'
  # Delete patch rejections (if any)
@@ -109,6 +109,12 @@ ccache -M '"$CCACHE_SIZE"'
    curl -s https://storage.googleapis.com/git-repo-downloads/repo > "$BIN_PATH"'/repo'
    if [ $? -eq 0 ]
    then
+    echo "=> Installing Google's Brotli..."
+    cd $HOME
+    git clone https://github.com/FacuM/prebuilt_brotli brotli
+    cd brotli
+    bash install.sh
+    cd $CUR    
     chmod a+x "$BIN_PATH"'/repo'
     echo '=> Reloading Bash configuration please wait...'
     . ~/.bashrc
