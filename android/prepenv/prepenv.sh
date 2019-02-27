@@ -84,6 +84,7 @@ else
  PM_CMD='sudo apt-get'
  $PM_CMD update
  PM_CMD="$PM_CMD"' -y install'
+ curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
  BUILD_DEPENDENCIES=$DEBIAN_BUILD_DEPENDENCIES
 fi
 if [ $? -eq 0 ]
@@ -114,7 +115,7 @@ ccache -M '"$CCACHE_SIZE"'
     git clone https://github.com/FacuM/prebuilt_brotli brotli
     cd brotli
     bash install.sh
-    cd $CUR    
+    cd $CUR
     chmod a+x "$BIN_PATH"'/repo'
     echo '=> Reloading Bash configuration please wait...'
     . ~/.bashrc
