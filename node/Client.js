@@ -3,6 +3,7 @@ const { google: Google } = require('googleapis');
 const { getType } = require('mime');
 
 const Authenticator = require('./Authenticator');
+const { getRandomDelay } = require('./Util');
 var { readFile, createReadStream } = require('fs');
 readFile = promisify(readFile);
 
@@ -11,6 +12,7 @@ module.exports = class extends require('events').EventEmitter {
 		super();
 		this.client = new Google.auth.OAuth2(clientID, clientSecret, redirectURL);
 		this.initiate();
+		this.busy = false;
 	}
 
 	initiate() {
@@ -50,8 +52,15 @@ module.exports = class extends require('events').EventEmitter {
 			},
 			fields: 'id'
 		}, (error, { data }) => {
-			if (error) throw error;
-			console.log('File ID: ', data.id);
+			if (error && error.code === 403 && !this.busy) {
+				const delay = getRandomDelay();
+				console.info(`We hit a ratelimit, trying again in ${delay} seconds`);
+				this.busy = true;
+				setTimeout(() => {
+					this.uploadFile(file);
+					this.busy = false;
+				}, delay * 1000);
+			} else console.log('File ID: ', data.id);
 		});
 	}
 
