@@ -1,4 +1,14 @@
+# Packages
 node_modules/
-package-lock
+package-lock.json
 yarn.lock
+
+# Authentication
 token.json
+
+# Log files
+logs/
+*.log
+
+# Miscellaneous
+.vscode/
