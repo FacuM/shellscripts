@@ -16,7 +16,7 @@ module.exports = class extends require('events').EventEmitter {
 	}
 
 	initiate() {
-		readFile('token.json').then(token => {
+		readFile(`${process.cwd()}/token.json`).then(token => {
 			this.client.setCredentials(JSON.parse(token));
 			this.drive = Google.drive({ version: 'v3', auth: this.client });
 			this.emit('ready');

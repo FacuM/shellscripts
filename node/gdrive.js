@@ -1,6 +1,6 @@
 const Client = require('./Client');
 
-const drive = new Client(JSON.parse(require('fs').readFileSync('credentials.json')).drive);
+const drive = new Client(JSON.parse(require('fs').readFileSync(`${process.cwd()}/credentials.json`)).drive);
 
 drive.on('ready', () => {
 	const [command, argument] = process.argv.slice(2);
