@@ -52,13 +52,11 @@ ERROR: Cannot proceed, one or more required values are missing.'
 else
  echo 'Running OTA generation commands...'
  # Logic from https://github.com/artur9010/pdup
- OTA_TARGET_PATH='out/target/product/'"$BREAKFAST_DEVICE"
+ OUT='out/target/product/'"$BREAKFAST_DEVICE"
  . vendor/"$ROM_LUNCH"/tools/changelog.sh
- CHANGELOG_PATH="$OTA_TARGET_PATH"'/Changelog.txt'
+ CHANGELOG_PATH="$OUT"'/Changelog.txt'
  CHANGELOG_URL=$(curl -# -F 'name='"$CHANGELOG_PATH" -F 'file=@'"$CHANGELOG_PATH" 'https://pixeldrain.com/api/file' | cut -d '"' -f 4)
  echo 'All done! You are ready to post your OTA updates.
 
-ROM URL: '"$ROM_URL"'
-MD5 URL: '"$MD5_URL"'
-CHANGELOG_URL: '"$CHANGELOG_URL"
+CHANGELOG_URL: https://pixeldrain.com/api/file/'"$CHANGELOG_URL"
 fi
