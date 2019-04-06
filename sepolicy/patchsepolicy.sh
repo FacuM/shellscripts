@@ -40,6 +40,7 @@ audit2allow --help > /dev/null 2> /dev/null
 if [ $? -eq 127 ]
 then
  printf '\naudit2allow is missing.\n\n\nBuild the ROM and add it to the path as follows: \n\n. build/envsetup.sh\nbreakfast device_codename\n'
+ exit 1
 else
  echo '- Parsing log (filtering denials)...'
  cat "$1" | grep avc > tmp
