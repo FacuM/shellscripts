@@ -23,7 +23,7 @@ BUILD_DATE=$(date '+%Y-%m-%d_%H-%M-%S')
 SIGN=1
 SIGNBUILD_URL='https://raw.githubusercontent.com/FacuM/shellscripts/master/android/signbuild/signbuild.sh'
 BREAKFAST_DEVICE='harpia'
-DEVICE_MANIFEST_URL='https://gist.githubusercontent.com/FacuM/f67473a5fb5da0bd62d77e8d7ce4a70d/raw/dcb3bf060f24239d004d0e33be87af5729ae723f/cosp_harpia.xml'
+DEVICE_MANIFEST_URL='https://gist.githubusercontent.com/FacuM/f67473a5fb5da0bd62d77e8d7ce4a70d/raw/216e075e8bbf1c2bc4b493439aab7823dfeb8e4b/cosp_harpia.xml'
 REPO_INIT_OPTS='--depth=1 --no-clone-bundle'
 REPO_SYNC_OPTS='--force-sync --force-broken --current-branch --no-tags --no-clone-bundle --optimized-fetch --prune'
 # REPO_SYNC_THREADS can be 'auto' or integer
