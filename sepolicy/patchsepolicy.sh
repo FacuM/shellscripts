@@ -13,37 +13,63 @@ PRIVATE_TYPES=('adbtcp_prop' 'storaged' 'hal_allocator' 'sysinit' 'ctl_mdnd_prop
 
 if [ -z $1 ]
 then
- printf '\nInvalid input.\n\nUsage: bash '"$0"' path/to/log\n'
+ printf '\nInvalid input.\n\nUsage: bash '"$0"' path/to/log [path/to/log] [path/to/log]...\n'
  exit 1
 else
- if [ ! -f "$1" ]
- then
-  echo "While reading \"$1\": file not found."
-  exit 1
- else
-  if ! grep 'avc' $1 > /dev/null
+ for log in "$@"
+ do
+  if [ -f "$log" ]
   then
-   echo 'No denials found.'
-   exit 1
-  else
-   if [ ! -d 'sepolicy' ]
+   echo "- Processed \"$log\"."
+   DENIALS=$(grep 'avc:' "$log" | wc -l)
+   if [ $DENIALS -eq 0 ]
    then
-    printf '\nNot a device tree or missing the "sepolicy" directory. If this is the expected behavior please type the following commands and try again: \n\nmkdir sepolicy\nmkdir sepolicy_private\n'
+    echo 'No denials found.'
     exit 1
+   else
+    echo '- '"$DENIALS"' denials found.'
+    if [ ! -d 'sepolicy' ]
+    then
+     printf '\nNot a device tree or missing the "sepolicy" directory. If this is the expected behavior please type the following commands and try again: \n\nmkdir sepolicy\nmkdir sepolicy_private\n'
+     exit 1
+    fi
    fi
+  else
+   echo "While processing \"$log\": file not found."
+   exit 1
   fi
- fi
+ done
 fi
 unset OUT
-echo "- Patching sepolicies from \"$1\"..."
+INFO="- Patching sepolicies from "
+COUNT=0
+for log in "$@"
+do
+ if [ $COUNT -eq 0 ]
+ then
+  INFO="$INFO"'"'"$log"'"'
+ else
+  if [ $COUNT -lt $(( $# - 1 )) ]
+  then
+   INFO="$INFO"', "'"$log"'"'
+  else
+   INFO="$INFO"' and "'"$log"'"'
+  fi
+ fi
+ COUNT=$(( $COUNT + 1 ))
+done
+echo "$INFO"'...'
 audit2allow --help > /dev/null 2> /dev/null
 if [ $? -eq 127 ]
 then
  printf '\naudit2allow is missing.\n\n\nBuild the ROM and add it to the path as follows: \n\n. build/envsetup.sh\nbreakfast device_codename\n'
  exit 1
 else
- echo '- Parsing log (filtering denials)...'
- cat "$1" | grep avc > tmp
+ echo '- Parsing logs (filtering denials)...'
+ for log in "$@"
+ do
+    cat "$log" | grep avc >> tmp
+ done
  echo '- Parse completed.'
  echo '- Generating rules...'
  audit2allow < tmp > sepolicyfix
