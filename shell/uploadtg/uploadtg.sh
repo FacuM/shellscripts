@@ -163,7 +163,7 @@ fi
 
 # Upload file and post in Telegram
 echo "Uploading ""$1""..."
-DOWNLOAD=$(curl -s --upload-file "$1" "https://transfer.sh")
+DOWNLOAD='https://pixeldrain.com/api/file/'$(curl -s -F 'file=@'"$1" "https://pixeldrain.com/api/file" | cut -d '"' -f 4)'?download'
 if [ $? -ne 0 ]
 then
  echo "There's been a problem uploading your release. Please try again and/or check for API updates."
