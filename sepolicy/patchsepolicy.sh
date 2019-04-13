@@ -68,7 +68,7 @@ else
  echo '- Parsing logs (filtering denials)...'
  for log in "$@"
  do
-    cat "$log" | grep avc >> tmp
+    grep avc "$log" >> tmp
  done
  echo '- Parse completed.'
  echo '- Generating rules...'
