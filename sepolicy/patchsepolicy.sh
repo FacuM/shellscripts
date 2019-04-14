@@ -41,6 +41,34 @@ else
  done
 fi
 unset OUT
+
+# Look for a hidden settings file, if present, import it.
+if [ -f "$HOME"'/.patchsepolicy_config.sh' ]
+then
+ . "$HOME"'/.patchsepolicy_config.sh'
+ echo '> Loaded extra settings from '"$HOME"'/.patchsepolicy_config.sh'
+ IGNORED=''
+ for rule in ${IGNORED_RULES[@]}
+ do
+  if [ "$rule" == 'private' ]
+  then
+   echo '  - Ignoring private rules.'
+   IGNORED="$IGNORED"'pr'
+  else
+   if [ "$rule" == 'public' ]
+   then
+    IGNORED="$IGNORED"'pu'
+    echo '  - Ignoring public rules.'
+   fi
+  fi
+ done
+ if [ "$IGNORED" == 'prpu' ] || [ "$IGNORED" == 'pupr' ]
+ then
+  echo '  - Ignoring both private and public rules, running a simulation.'
+ fi
+fi
+
+# Start patching.
 INFO="- Patching sepolicies from "
 COUNT=0
 for log in "$@"
@@ -97,26 +125,36 @@ do
       TYPE='PUBLIC'
      fi
     done
-    if [ "$TYPE" == 'PRIVATE' ]
+    if [ "$IGNORED" == 'pupr' ] || [ "$IGNORED" == 'prpu' ]
     then
-     OUTDIR='sepolicy_private'
+     printf '\n'"$TYPE"': '"$line"' - Skipped, running a simulation.'
     else
-     OUTDIR='sepolicy'
-    fi
-    printf '\n'"$TYPE"': '"$line"
-    if [ -f "$OUTDIR"'/'"$OUT"'.te' ]
-    then
-     MATCH=$(grep -n "$line" "$OUTDIR"'/'"$OUT"'.te')
-     if [ $? -eq 0 ]
+     if [[ ("$IGNORED" == 'pu' && "$TYPE" == 'PUBLIC') || ("$IGNORED" == 'pr' && "$TYPE" == 'PRIVATE') ]]
      then
-      printf ' - Found matching line, skipped.'
+      printf '\n'"$TYPE"': '"$line"' - Skipped as per user settings.'
      else
-      printf ' - Added.'
-      echo "$line" >> "$OUTDIR"'/'"$OUT"'.te'
+      if [ "$TYPE" == 'PRIVATE' ]
+      then
+       OUTDIR='sepolicy_private'
+      else
+       OUTDIR='sepolicy'
+      fi
+      printf '\n'"$TYPE"': '"$line"
+      if [ -f "$OUTDIR"'/'"$OUT"'.te' ]
+      then
+       MATCH=$(grep -n "$line" "$OUTDIR"'/'"$OUT"'.te')
+       if [ $? -eq 0 ]
+       then
+        printf ' - Found matching line, skipped.'
+       else
+        printf ' - Added.'
+        echo "$line" >> "$OUTDIR"'/'"$OUT"'.te'
+       fi
+      else
+        printf ' - Added.'
+        echo "$line" >> "$OUTDIR"'/'"$OUT"'.te'
+      fi
      fi
-    else
-      printf ' - Added.'
-      echo "$line" >> "$OUTDIR"'/'"$OUT"'.te'
     fi
    fi
   fi
