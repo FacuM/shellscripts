@@ -11,7 +11,7 @@ else
  then
   echo "=> Will now run breakfast for device codename $1"
   breakfast sample > /dev/null 2> /dev/null
-  if [ $? -eq 127 ]
+  if [ $? -ne 0 ]
   then
     echo "WARN: This ROM doesn't seem to support breakfast, trying with lunch instead."
     lunch "$ROM_LUNCH"'_'"$BREAKFAST_DEVICE"'-userdebug' > tmp
