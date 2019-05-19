@@ -16,6 +16,7 @@ if [ ! -f ~/.uploadtg_config.sh ]
 then
  echo 'No config file found at '"$HOME"'/.uploadtg_config.sh.'
  echo "# Configuration
+server='pixeldrain'
 api_key='<your bot api key>'
 chat_id='<your chat id (group, channel, user, etc.)>'" > ~/.uploadtg_config.sh
  if [ $? -eq 0 ]
@@ -32,7 +33,7 @@ else
   . ~/.uploadtg_config.sh
   if [ "$api_key" == '<your bot api key>' ] || [ "$chat_id" == '<your chat id (group, channel, user, etc.)>' ]
   then
-   echo 'One or more variables are stil using their default values. Edit the config file and try again.'
+   echo 'One or more variables are still using their default values. Edit the config file and try again.'
    exit 1
   fi
  fi
@@ -40,6 +41,7 @@ fi
 
 # Emojis
 SEPARATOR=$'\xE2\x9E\x96'            # (minus symbol)
+SERVER_EMOJI=$'\xF0\x9F\x92\xBE'     # (floppy disk)
 FILE_EMOJI=$'\xF0\x9F\x93\x84'       # (page up)
 MAINTAINER_EMOJI=$'\xF0\x9F\x91\xB7' # (constructor)
 MD5_EMOJI=$'\xF0\x9F\x92\xBF'        # (cd)
@@ -88,6 +90,15 @@ function wait_for_api()
    sleep 1
   done
   printf '\n'
+ fi
+}
+
+function check_upload()
+{
+ if [ $? -ne 0 ]
+ then
+  echo "There's been a problem uploading your release. Please try again and/or check for API updates."
+  exit 1
  fi
 }
 
@@ -162,14 +173,39 @@ then
 fi
 
 # Upload file and post in Telegram
-echo "Uploading ""$1""..."
-DOWNLOAD='https://pixeldrain.com/api/file/'$(curl -s -F 'file=@'"$1" "https://pixeldrain.com/api/file" | cut -d '"' -f 4)'?download'
-if [ $? -ne 0 ]
-then
- echo "There's been a problem uploading your release. Please try again and/or check for API updates."
- exit 1
-fi
-OUTPUT="$(drawSeparator '9')"
+echo 'Uploading '"$1"'...'
+case $server in
+	'pixeldrain')
+		SERVER='PixelDrain'
+		DOWNLOAD='https://pixeldrain.com/api/file/'$(curl -s -F 'file=@'"$1" "https://pixeldrain.com/api/file" | cut -d '"' -f 4)'?download'
+		;;
+	'gdrive')
+		SERVER='Google Drive'
+		FID=$(gdrive upload "$1" | tail -1 | cut -d ' ' -f 2)
+		check_upload
+		echo 'Sharing file ('"$FID"')...'
+		gdrive share "$FID"
+		DOWNLOAD=$(gdrive info "$FID" | grep 'DownloadUrl' | cut -d ' ' -f 2)
+		;;
+	'transfersh')
+		SERVER='transfer.sh'
+		DOWNLOAD=$(curl --upload-file "$1" https://transfer.sh)
+		check_upload
+		;;
+	*)
+		if [ "$server" == '' ]
+		then
+		 printf 'No server specified'
+		else
+		 printf 'Invalid server specified'
+		fi
+		printf ', the valid options are "pixeldrain", "gdrive" or "transfersh". Aborting...\n'
+		exit 1
+		;;
+esac
+check_upload
+OUTPUT="$(drawSeparator '9')""
+$SERVER_EMOJI"' **SERVER:** '"$SERVER"
 COUNT=$(printf "$1" | awk -F \/ '{print NF}')
 NAME=$(printf "$1" | cut -d \/ -f $COUNT)
 OUTPUT="$OUTPUT""
