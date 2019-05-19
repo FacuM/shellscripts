@@ -16,7 +16,7 @@ if [ ! -f ~/.uploadtg_config.sh ]
 then
  echo 'No config file found at '"$HOME"'/.uploadtg_config.sh.'
  echo "# Configuration
-server='pixeldrain'
+servers=( 'pixeldrain' )
 api_key='<your bot api key>'
 chat_id='<your chat id (group, channel, user, etc.)>'" > ~/.uploadtg_config.sh
  if [ $? -eq 0 ]
@@ -49,6 +49,7 @@ SHA256_EMOJI=$'\xF0\x9F\x93\x80'     # (dvd)
 NOTE_EMOJI=$'\xF0\x9F\x93\x9C'       # (scroll)
 TESTERS_EMOJI=$'\xF0\x9F\x94\x8D'    # (magnifying glass left)
 LOG_EMOJI=$'\xF0\x9F\x93\x9F'        # (pager)
+MIRRORS_EMOJI=$'\xE2\xAD\x90'        # (white medium star)
 
 # Function definition
 
@@ -128,6 +129,21 @@ else
  NOTE='No release notes have been provided.'
 fi
 
+# Server/mirrors selection.
+if [ "$servers" == '' ] || [ ${#servers[@]} -lt 1 ]
+then
+  printf 'No server specified, valid options are "pixeldrain", "gdrive" or "transfersh". Aborting...\n'
+else
+  for server in "${servers[@]}"
+  do
+    if [ "$server" != 'pixeldrain' ] && [ "$server" != 'gdrive' ] && [ "$server" != 'transfersh' ]
+    then
+      printf 'Invalid server specified, the valid options are "pixeldrain", "gdrive" or "transfersh". Aborting...\n'
+      exit 1
+    fi
+  done
+fi
+
 # Maintainer
 if [ "$3" != '' ]
 then
@@ -172,38 +188,49 @@ then
  LOG_PATH="$6"
 fi
 
-# Upload file and post in Telegram
-echo 'Uploading '"$1"'...'
-case $server in
-	'pixeldrain')
-		SERVER='PixelDrain'
-		DOWNLOAD='https://pixeldrain.com/api/file/'$(curl -s -F 'file=@'"$1" "https://pixeldrain.com/api/file" | cut -d '"' -f 4)'?download'
-		check_upload
-		;;
-	'gdrive')
-		SERVER='Google Drive'
-		FID=$(gdrive upload "$1" | tail -1 | cut -d ' ' -f 2)
-		check_upload
-		echo 'Sharing file ('"$FID"')...'
-		gdrive share "$FID"
-		DOWNLOAD=$(gdrive info "$FID" | grep 'DownloadUrl' | cut -d ' ' -f 2)
-		;;
-	'transfersh')
-		SERVER='transfer.sh'
-		DOWNLOAD=$(curl --upload-file "$1" https://transfer.sh)
-		check_upload
-		;;
-	*)
-		if [ "$server" == '' ]
-		then
-		 printf 'No server specified'
-		else
-		 printf 'Invalid server specified'
-		fi
-		printf ', the valid options are "pixeldrain", "gdrive" or "transfersh". Aborting...\n'
-		exit 1
-		;;
-esac
+# Initialize auxiliary values
+MIRROR=0
+COUNT=$(printf "$1" | awk -F \/ '{print NF}')
+NAME=$(printf "$1" | cut -d \/ -f $COUNT)
+
+for server in "${servers[@]}"
+do
+   # Upload file and post in Telegram
+   echo 'Uploading '"$1"'...'
+   case $server in
+    'pixeldrain')
+      PRESERVER='PixelDrain'
+      PREDOWNLOAD='https://pixeldrain.com/api/file/'$(curl -s -F 'file=@'"$1" "https://pixeldrain.com/api/file" | cut -d '"' -f 4)'?download'
+      check_upload
+      ;;
+    'gdrive')
+      PRESERVER='Google Drive'
+      FID=$(gdrive upload "$1" | tail -1 | cut -d ' ' -f 2)
+      check_upload
+      echo 'Sharing file ('"$FID"')...'
+      gdrive share "$FID"
+      PREDOWNLOAD=$(gdrive info "$FID" | grep 'DownloadUrl' | cut -d ' ' -f 2)
+      ;;
+    'transfersh')
+      PRESERVER='transfer.sh'
+      PREDOWNLOAD=$(curl --upload-file "$1" https://transfer.sh)
+      check_upload
+      ;;
+   esac
+
+   # Mirrors
+   if [ $MIRROR -gt 0 ]
+   then
+    echo 'Uploading to mirror #'"$MIRROR"' ('"$server"')...'
+    MIRRORS="$MIRRORS"'
+- #'"$MIRROR"' '"$PRESERVER"': ['"$NAME"']('"$PREDOWNLOAD"') '
+   else
+    SERVER="$PRESERVER"
+    DOWNLOAD="$PREDOWNLOAD"
+   fi
+
+   MIRROR=$(( $MIRROR + 1 ))
+done
 OUTPUT="$(drawSeparator '9')""
 $SERVER_EMOJI"' **SERVER:** '"$SERVER"
 COUNT=$(printf "$1" | awk -F \/ '{print NF}')
@@ -227,6 +254,11 @@ then
  OUTPUT="$OUTPUT""
 
 $LOG_EMOJI"' ''The maintainer attached a build log to this release.'
+fi
+if [ ${#servers[@]} -gt 1 ]
+then
+ OUTPUT="$OUTPUT"'
+'"$MIRRORS_EMOJI"' MIRRORS:'"$MIRRORS"
 fi
 OUTPUT="$OUTPUT""
 $(drawSeparator '9')"
