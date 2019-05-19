@@ -41,8 +41,9 @@ fi
 
 # Emojis
 SEPARATOR=$'\xE2\x9E\x96'            # (minus symbol)
-SERVER_EMOJI=$'\xF0\x9F\x92\xBE'     # (floppy disk)
+SERVER_EMOJI=$'\xE2\x98\x81'         # (cloud)
 FILE_EMOJI=$'\xF0\x9F\x93\x84'       # (page up)
+SIZE_EMOJI=$'\xF0\x9F\x92\xBE'       # (floppy disk)
 MAINTAINER_EMOJI=$'\xF0\x9F\x91\xB7' # (constructor)
 MD5_EMOJI=$'\xF0\x9F\x92\xBF'        # (cd)
 SHA256_EMOJI=$'\xF0\x9F\x93\x80'     # (dvd)
@@ -196,7 +197,6 @@ NAME=$(printf "$1" | cut -d \/ -f $COUNT)
 for server in "${servers[@]}"
 do
    # Upload file and post in Telegram
-   echo 'Uploading '"$1"'...'
    case $server in
     'pixeldrain')
       PRESERVER='PixelDrain'
@@ -221,10 +221,11 @@ do
    # Mirrors
    if [ $MIRROR -gt 0 ]
    then
-    echo 'Uploading to mirror #'"$MIRROR"' ('"$server"')...'
+    echo 'Uploading '"$1"' to mirror #'"$MIRROR"' ('"$server"')...'
     MIRRORS="$MIRRORS"'
 - #'"$MIRROR"' '"$PRESERVER"': ['"$NAME"']('"$PREDOWNLOAD"') '
    else
+    echo 'Uploading '"$1"' to the main server ('"$server"')...'
     SERVER="$PRESERVER"
     DOWNLOAD="$PREDOWNLOAD"
    fi
@@ -236,7 +237,9 @@ $SERVER_EMOJI"' **SERVER:** '"$SERVER"
 COUNT=$(printf "$1" | awk -F \/ '{print NF}')
 NAME=$(printf "$1" | cut -d \/ -f $COUNT)
 OUTPUT="$OUTPUT""
-$FILE_EMOJI"' '"**FILE:** [""$NAME""](""$DOWNLOAD"")"
+$FILE_EMOJI"' **FILE:** ['"$NAME"']('"$DOWNLOAD"')'
+OUTPUT="$OUTPUT""
+$SIZE_EMOJI"' **SIZE:** '$(du --block-size='MB' "$1" | sed 's/\t.*//')
 OUTPUT="$OUTPUT""
 $MAINTAINER_EMOJI"' ''**MAINTAINER: '"$MAINTAINER"
 MD5=$(cat "$1"'.md5sum' | cut -d ' ' -f 1)
