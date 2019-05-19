@@ -178,6 +178,7 @@ case $server in
 	'pixeldrain')
 		SERVER='PixelDrain'
 		DOWNLOAD='https://pixeldrain.com/api/file/'$(curl -s -F 'file=@'"$1" "https://pixeldrain.com/api/file" | cut -d '"' -f 4)'?download'
+		check_upload
 		;;
 	'gdrive')
 		SERVER='Google Drive'
@@ -203,7 +204,6 @@ case $server in
 		exit 1
 		;;
 esac
-check_upload
 OUTPUT="$(drawSeparator '9')""
 $SERVER_EMOJI"' **SERVER:** '"$SERVER"
 COUNT=$(printf "$1" | awk -F \/ '{print NF}')
