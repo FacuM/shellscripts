@@ -250,18 +250,18 @@ OUTPUT="$OUTPUT""
 $SHA256_EMOJI"' ''**SHA256:** `'"$SHA256"'`'
 OUTPUT="$OUTPUT""
 $NOTE_EMOJI"' ''**NOTE:** '"
-$NOTE"""
+$NOTE"
+if [ ${#servers[@]} -gt 1 ]
+then
+ OUTPUT="$OUTPUT"'
+'"$MIRRORS_EMOJI"' MIRRORS:'"$MIRRORS"
+fi
 OUTPUT="$OUTPUT""$TESTERS"
 if [ ! -z $LOG_PATH ]
 then
  OUTPUT="$OUTPUT""
 
 $LOG_EMOJI"' ''The maintainer attached a build log to this release.'
-fi
-if [ ${#servers[@]} -gt 1 ]
-then
- OUTPUT="$OUTPUT"'
-'"$MIRRORS_EMOJI"' MIRRORS:'"$MIRRORS"
 fi
 OUTPUT="$OUTPUT""
 $(drawSeparator '9')"
