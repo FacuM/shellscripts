@@ -30,7 +30,17 @@ CUR=$PWD
 OS_RELEASE="$(cat /etc/*-release)"
 # Make sure $BIN_PATH exists.
 mkdir -p $BIN_PATH
-if echo "$OS_RELEASE" | grep "Arch" > /dev/null
+STATCNT=0
+if ! echo "$OS_RELEASE" | grep "Arch" > /dev/null
+then
+ STATCNT=$(( $STATCNT + 1 ))
+fi
+if ! echo "$OS_RELEASE" | grep "Manjaro" > /dev/null
+then
+ STATCNT=$(( $STATCNT + 1 ))
+fi
+echo "$STATCNT"
+if [ $STATCNT -lt 2 ]
 then
  # Fetching an updated list of mirrors
  cp -f /etc/pacman.d/mirrorlist ./mirrorlist
