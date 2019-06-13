@@ -39,10 +39,10 @@ if ! echo "$OS_RELEASE" | grep "Manjaro" > /dev/null
 then
  STATCNT=$(( $STATCNT + 1 ))
 fi
-echo "$STATCNT"
 if [ $STATCNT -lt 2 ]
 then
  # Fetching an updated list of mirrors
+ rm -f ./mirrorlist
  cp -f /etc/pacman.d/mirrorlist ./mirrorlist
  echo 'Backed up /etc/pacman.d/mirrorlist to ./mirrorlist. Fetching from country "all".'
  if curl -s 'https://www.archlinux.org/mirrorlist/?country=all&protocol=http&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on' > ./mirrorlist_new 2> /dev/null
@@ -88,6 +88,8 @@ then
  PM_CMD='yay -Syu --noconfirm'
  BUILD_DEPENDENCIES=$ARCH_BUILD_DEPENDENCIES
  # Make links for "repo"
+ rm -f ~/bin/python
+ rm -f ~/bin/python-config
  ln -s /usr/bin/python2 ~/bin/python
  ln -s /usr/bin/python2-config ~/bin/python-config
 else
