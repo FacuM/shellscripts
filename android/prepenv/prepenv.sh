@@ -94,7 +94,14 @@ then
  ln -s /usr/bin/python2 ~/bin/python
  ln -s /usr/bin/python2-config ~/bin/python-config
 else
- PM_CMD='sudo apt-get'
+ PM_CMD='sudo '
+ $PM_CMD apt-fast 2> /dev/null > /dev/null
+ if [ $? -eq 127 ]
+ then
+  PM_CMD="$PM_CMD"' apt-get'
+ else
+  PM_CMD="$PM_CMD"' apt-fast'
+ fi
  $PM_CMD update
  PM_CMD="$PM_CMD"' -y install'
  curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
