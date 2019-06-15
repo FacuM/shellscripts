@@ -27,7 +27,8 @@ Usage:
 fi
 
 CUR=$PWD
-OS_RELEASE="$(cat /etc/*-release)"
+OS_RELEASE="$(find /etc/*-release | tail -1)"
+OS_RELEASE="$(cat $OS_RELEASE)"
 # Make sure $BIN_PATH exists.
 mkdir -p $BIN_PATH
 STATCNT=0
