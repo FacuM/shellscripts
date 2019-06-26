@@ -44,7 +44,7 @@ else
  fi
  echo '==> Target filename is '"$TARGETZIP"
  echo "=> Making target files package..."
- mka -j$(nproc --all) target-files-package dist &&
+ make -j$(nproc --all) target-files-package dist &&
  printf "=> Signing apks... "
  TARGET=$(ls -tr1 out/dist | tail -1)
  printf "(target from $TARGET)\n"
