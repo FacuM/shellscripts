@@ -137,7 +137,7 @@ then
 else
   for server in "${servers[@]}"
   do
-    if [ "$server" != 'pixeldrain' ] && [ "$server" != 'gdrive' ] && [ "$server" != 'transfersh' ]
+    if [ "$server" != 'pixeldrain' ] && [ "$server" != 'gdrive' ] && [ "$server" != 'transfersh' ] && [ "$server" != 'mega' ]
     then
       printf 'Invalid server specified, the valid options are "pixeldrain", "gdrive" or "transfersh". Aborting...\n'
       exit 1
@@ -198,6 +198,11 @@ for server in "${servers[@]}"
 do
    # Upload file and post in Telegram
    case $server in
+    'mega')
+      PRESERVER='Mega'
+      PREDOWNLOAD=$(mega-put -q "$1" && mega-export -a "$1" | cut -d ' ' -f 3)
+      check_upload
+      ;;
     'pixeldrain')
       PRESERVER='PixelDrain'
       PREDOWNLOAD='https://pixeldrain.com/api/file/'$(curl -s -F 'file=@'"$1" "https://pixeldrain.com/api/file" | cut -d '"' -f 4)'?download'
