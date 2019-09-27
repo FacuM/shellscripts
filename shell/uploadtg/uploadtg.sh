@@ -272,7 +272,7 @@ $LOG_EMOJI"' ''The maintainer attached a build log to this release.'
 fi
 OUTPUT="$OUTPUT""
 $(drawSeparator '9')"
-curl "https://api.telegram.org/bot""$api_key""/sendMessage" -d "{ \"chat_id\":\"$chat_id\", \"text\":\"$OUTPUT\", \"parse_mode\":\"markdown\"}" -H "Content-Type: application/json" -s > /dev/null
+curl "https://api.telegram.org/bot""$api_key""/sendMessage" -d "{ \"chat_id\":\"$chat_id\", \"text\":\"$OUTPUT\", \"parse_mode\":\"markdown\", \"disable_web_page_preview\":true}" -H "Content-Type: application/json" -s > /dev/null
 STATUS=$?
 echo 'FILE: '$NAME' ''('"$DOWNLOAD"')'
 echo 'MAINTAINER: '$MAINTAINER
