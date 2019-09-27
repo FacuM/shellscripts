@@ -200,8 +200,10 @@ do
    case $server in
     'mega')
       PRESERVER='Mega'
-      PREDOWNLOAD=$(mega-put -q "$1" && mega-export -a "$1" | cut -d ' ' -f 3)
+      PREDOWNLOAD=$(echo "$1" | cut -d '/' -f `echo "$1" | awk -F '/' '{print NF}'`)
+      mega-put "$1"
       check_upload
+      PREDOWNLOAD=$(mega-export -a "$PREDOWNLOAD" | cut -d ' ' -f 3)
       ;;
     'pixeldrain')
       PRESERVER='PixelDrain'
