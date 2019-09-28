@@ -196,6 +196,18 @@ NAME=$(printf "$1" | cut -d \/ -f $COUNT)
 
 for server in "${servers[@]}"
 do
+   # Mirrors
+   if [ $MIRROR -gt 0 ]
+   then
+    echo 'Uploading '"$1"' to mirror #'"$MIRROR"' ('"$server"')...'
+    MIRRORS="$MIRRORS"'
+- #'"$MIRROR"' '"$PRESERVER"': ['"$NAME"']('"$PREDOWNLOAD"') '
+   else
+    echo 'Uploading '"$1"' to the main server ('"$server"')...'
+    SERVER="$PRESERVER"
+    DOWNLOAD="$PREDOWNLOAD"
+   fi
+
    # Upload file and post in Telegram
    case $server in
     'mega')
@@ -224,18 +236,6 @@ do
       check_upload
       ;;
    esac
-
-   # Mirrors
-   if [ $MIRROR -gt 0 ]
-   then
-    echo 'Uploading '"$1"' to mirror #'"$MIRROR"' ('"$server"')...'
-    MIRRORS="$MIRRORS"'
-- #'"$MIRROR"' '"$PRESERVER"': ['"$NAME"']('"$PREDOWNLOAD"') '
-   else
-    echo 'Uploading '"$1"' to the main server ('"$server"')...'
-    SERVER="$PRESERVER"
-    DOWNLOAD="$PREDOWNLOAD"
-   fi
 
    MIRROR=$(( $MIRROR + 1 ))
 done
