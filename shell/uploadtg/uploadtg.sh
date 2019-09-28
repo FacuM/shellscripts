@@ -191,31 +191,32 @@ fi
 
 # Initialize auxiliary values
 MIRROR=0
-COUNT=$(printf "$1" | awk -F \/ '{print NF}')
-NAME=$(printf "$1" | cut -d \/ -f $COUNT)
+NAME=$(printf "$1" | cut -d '/' -f `echo "$1" | awk -F '/' '{print NF}'`)
+
+if [ "$1" == "$NAME" ]
+then
+ LOGGED_NAME="$NAME"
+else
+ LOGGED_NAME="$NAME"' ('"$1"')'
+fi
 
 for server in "${servers[@]}"
 do
    # Mirrors
    if [ $MIRROR -gt 0 ]
    then
-    echo 'Uploading '"$1"' to mirror #'"$MIRROR"' ('"$server"')...'
-    MIRRORS="$MIRRORS"'
-- #'"$MIRROR"' '"$PRESERVER"': ['"$NAME"']('"$PREDOWNLOAD"') '
+    echo 'Uploading '"$LOGGED_NAME"' to mirror #'"$MIRROR"' ('"$server"')...'
    else
-    echo 'Uploading '"$1"' to the main server ('"$server"')...'
-    SERVER="$PRESERVER"
-    DOWNLOAD="$PREDOWNLOAD"
+    echo 'Uploading '"$LOGGED_NAME"' to the main server ('"$server"')...'
    fi
 
    # Upload file and post in Telegram
    case $server in
     'mega')
       PRESERVER='Mega'
-      PREDOWNLOAD=$(echo "$1" | cut -d '/' -f `echo "$1" | awk -F '/' '{print NF}'`)
       mega-put "$1"
       check_upload
-      PREDOWNLOAD=$(mega-export -a "$PREDOWNLOAD" | cut -d ' ' -f 3)
+      PREDOWNLOAD=$(mega-export -a "$NAME" | cut -d ' ' -f 3)
       ;;
     'pixeldrain')
       PRESERVER='PixelDrain'
@@ -240,6 +241,15 @@ do
       rm -f /tmp/tsh_out
       ;;
    esac
+
+   if [ $MIRROR -gt 0 ]
+   then
+    MIRRORS="$MIRRORS"'
+- #'"$MIRROR"' '"$PRESERVER"': ['"$NAME"']('"$PREDOWNLOAD"') '
+   else
+    SERVER="$PRESERVER"
+    DOWNLOAD="$PREDOWNLOAD"
+   fi
 
    MIRROR=$(( $MIRROR + 1 ))
 done
