@@ -219,8 +219,10 @@ do
       ;;
     'pixeldrain')
       PRESERVER='PixelDrain'
-      PREDOWNLOAD='https://pixeldrain.com/api/file/'$(curl -s -F 'file=@'"$1" "https://pixeldrain.com/api/file" | cut -d '"' -f 4)'?download'
+      curl -# -F 'file=@'"$1" "https://pixeldrain.com/api/file" > /tmp/pd_out
       check_upload
+      PREDOWNLOAD='https://pixeldrain.com/api/file/'$(cat /tmp/pd_out | cut -d '"' -f 4)'?download'
+      rm -f /tmp/pd_out
       ;;
     'gdrive')
       PRESERVER='Google Drive'
@@ -232,8 +234,10 @@ do
       ;;
     'transfersh')
       PRESERVER='transfer.sh'
-      PREDOWNLOAD=$(curl --upload-file "$1" https://transfer.sh)
+      curl -# --upload-file "$1" https://transfer.sh > /tmp/tsh_out
       check_upload
+      PREDOWNLOAD=$(cat /tmp/tsh_out)
+      rm -f /tmp/tsh_out
       ;;
    esac
 
