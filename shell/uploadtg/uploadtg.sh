@@ -125,7 +125,9 @@ fi
 # Note
 if [ "$2" != '' ]
 then
- NOTE="$2"
+ # The patterns below look for characters that could crash the upload process and
+ # escapes them.
+ NOTE=$(printf '%s' "$2" | sed 's/_/\\\\_/g' | sed 's/*/\\\\*/g' | sed 's/`/\\\\`/g')
 else
  NOTE='No release notes have been provided.'
 fi
@@ -262,7 +264,7 @@ $FILE_EMOJI"' **FILE:** ['"$NAME"']('"$DOWNLOAD"')'
 OUTPUT="$OUTPUT""
 $SIZE_EMOJI"' **SIZE:** '$(du --block-size='MB' "$1" | sed 's/\t.*//')
 OUTPUT="$OUTPUT""
-$MAINTAINER_EMOJI"' ''**MAINTAINER: '"$MAINTAINER"
+$MAINTAINER_EMOJI"' ''**MAINTAINER:** '"$MAINTAINER"
 MD5=$(cat "$1"'.md5sum' | cut -d ' ' -f 1)
 OUTPUT="$OUTPUT""
 $MD5_EMOJI"' ''**MD5:** `'"$MD5"'`'
