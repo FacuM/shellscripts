@@ -119,6 +119,7 @@ then
 # Android build settings #
 # ====================== #
 export USE_CCACHE=1
+export CCACHE_EXEC=$(which ccache)
 ccache -M '"$CCACHE_SIZE"'
 # ====================== #
 # Android build settings #
