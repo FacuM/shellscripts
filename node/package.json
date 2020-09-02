@@ -5,7 +5,7 @@
   "main": "gdrive.js",
   "author": "Double A (developer.doublea@gmail.com)",
   "dependencies": {
-    "googleapis": "^27.0.0"
+    "googleapis": "^39.1.0"
   },
   "devDependencies": {
     "eslint": "^5.15.1",
